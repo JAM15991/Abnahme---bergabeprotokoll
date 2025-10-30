@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <title>Firebase Test</title>
+</head>
+<body>
+  <h1>Firebase Testverbindung</h1>
+  <div id="status">⏳ Initialisiere...</div>
+
+  <script type="module">
+    // 🔹 Firebase SDKs aus dem Web importieren
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+    import { getFirestore } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-analytics.js";
+
+    // 🔹 Deine eigene Konfigurationsdatei importieren
+    import { firebaseConfig } from "./firebase-config.js";
+
+    // 🚀 Firebase starten
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const db = getFirestore(app);
+
+    document.getElementById("status").innerText = "✅ Firebase verbunden!";
+  </script>
+</body>
+</html>

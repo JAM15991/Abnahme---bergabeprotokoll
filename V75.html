@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light" style="overscroll-behavior: none;"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IN ARBEIT – Abnahme/Übergabeprotokoll</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 11.5 12 4l9 7.5v8a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-8Z' fill='%23ffffff'/%3E%3C/svg%3E">
+
+
+<style>
+/* === Haupt-UI / kompaktes Layout === */
+:root{--bg:#f6f8fc;--card:#fff;--txt:#0f172a;--mut:#6b7280;--line:#e5e7eb;--pri:#0f6fff;--pri2:#0c59c7;--ok:#10b981;--warn:#f59e0b;--dang:#dc2626;--g1:#e9f1fb;--g2:#dbe7f7;--ico:#2e5f95}
+[data-theme="dark"]{--bg:#0b1220;--card:#0f172a;--txt:#e5e7eb;--mut:#9aa4b2;--line:#1f2937;--pri:#3b82f6;--pri2:#2563eb;--ok:#10b981;--warn:#f59e0b;--dang:#ef4444;--g1:#0f172a;--g2:#111827;--ico:#7aa2ff}
+*{box-sizing:border-box}html,body,button,input,select,textarea{font-family:Calibri,Arial,sans-serif}body{margin:0;background:var(--bg);color:var(--txt)}
+.top{background:#0d2a4d;color:#fff;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:12px 16px;border-bottom:4px solid #0b2340;gap:10px}
+
+/* Überschrift APP HAUPT UI */
+.top .title{display:flex;align-items:center;gap:10px;justify-self:center}.top .logo{width:34px;height:34px}.top h1{margin:0;font-size:30px;font-weight:800;letter-spacing:.2px;text-align:center}.top .grp{display:flex;align-items:center;gap:10px;justify-self:end;flex-wrap:wrap}
+.bbtn{display:inline-flex;gap:8px;align-items:center;background:#1e3a8a;color:#fff;border:0;border-radius:10px;padding:8px 12px;font-size:17px;cursor:pointer}.bbtn:hover{background:#1d4ed8}
+.icon{width:16px;height:16px;fill:#fff}.tgl{display:inline-flex;align-items:center;gap:8px;background:#0a1d3f;border:1px solid rgba(255,255,255,.18);color:#dbeafe;padding:6px 10px;border-radius:999px;cursor:pointer;font-size:17px}.tgl svg{width:16px;height:16px;fill:#dbeafe}
+.wrap{max-width:1100px;margin:16px auto;padding:0 14px}.card{background:var(--card);border-radius:14px;box-shadow:0 8px 26px rgba(0,0,0,.06);padding:14px;margin:12px 0;border:1px solid var(--line)}
+
+/* Überschrift Blöcke HAUPT UI */
+.hdr{display:flex;justify-content:center;align-items:center;gap:12px;background:linear-gradient(180deg,var(--g1),var(--g2));color:#2e5f95;font-weight:800;font-size:1.7rem;padding:14px;border-radius:12px;margin:-4px -4px 12px}[data-theme="dark"] .hdr{color:#93c5fd}.hdr .ico{width:24px;height:24px;fill:var(--ico)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:900px){.grid{grid-template-columns:1fr}}
+
+/* === Schriftanpassung Überschriften Eingabefelder / Font Size Anpassung für Schriftgröße === */
+/* Überschrift EIngabefelder Haupt UI + Eingabefelder groß in Modale */
+label{font-size:18px;color:#334155;display:block;margin:6px 0}[data-theme="dark"] label{color:#cbd5e1}
+
+/* === Schriftanpassung Eingabefelder / Font Size Anpassung für Schriftgröße === */
+/* Eingabefelder Haupt UI + Modale alle */
+input,select,textarea{width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;font-size:17px;background:#fbfdff;color:#111}[data-theme="dark"] input,[data-theme="dark"] select,[data-theme="dark"] textarea{background:#0b1220;color:#e5e7eb;border-color:#1f2937}textarea{min-height:120px;resize:vertical}
+
+/* Hinweise wie "Keine Bilder vorhanden" etc. */
+.list{display:flex;flex-direction:column;gap:10px}.item{border:1px solid var(--line);border-radius:12px;background:#fff;padding:12px;display:flex;flex-direction:column;gap:10px;position:relative}[data-theme="dark"] .item{background:#0b1220}.item-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.left{flex:1 1 auto;min-width:0}.mut{color:var(--mut);font-size:12px;margin-top:4px}
+
+/*  Schriftanpassung in Subblöcken - Head Räume / Zähler etc - Mut Ausstattung / Stand etc - Anzeige Adresse / Tel etc. Stammdaten */
+.item-head strong{font-family:Calibri,Arial,sans-serif;font-size:1.0rem;font-weight:700;color:var(--txt);letter-spacing:.2px}
+.item .mut{font-family:Calibri,Arial,sans-serif;font-size:1.0rem;color:var(--mut);line-height:1.4;font-weight:500}
+[data-theme="dark"] .item-head strong{color:#f1f5f9}[data-theme="dark"] .item .mut{color:#94a3b8}
+
+
+/* === 1. Buttons in Modalen + 2. Buttons in Stammdaten (nur die der Verwaltung) === */
+.btn{background:var(--pri);color:#fff;border:0;border-radius:12px;padding:10px 14px;font-size:18px;cursor:pointer;transition:.15s}.btn:hover{background:var(--pri2)}.btn.ok{background:var(--ok)}.btn.warn{background:var(--warn)}.btn.dang{background:var(--dang)}.btn.ghost{background:#eef1f6;color:#111}[data-theme="dark"] .btn.ghost{background:#111827;color:#e5e7eb}.btn.sm{padding:7px 9px;font-size:17px;border-radius:10px}
+
+/* === Haupt-UI Buttons / 50PX????? === */
+.btn-main{display:inline-flex;align-items:center;justify-content:center;gap:6px;background:var(--pri);color:#fff;border:0;border-radius:14px;padding:12px 18px;font-size:18px;font-weight:600;line-height:1.3;cursor:pointer;transition:all .15s ease;text-align:center}
+.btn-main:hover{background:var(--pri2);transform:translateY(-1px);box-shadow:0 3px 8px rgba(0,0,0,.12)}
+.btn-main:active{transform:scale(.97)}.btn-main.ok{background:var(--ok)}.btn-main.warn{background:var(--warn)}.btn-main.dang{background:var(--dang)}
+.btn-main.ghost{background:#eef1f6;color:#111}[data-theme="dark"] .btn-main.ghost{background:#111827;color:#e5e7eb}
+.btn-main.sm{padding:9px 11px;font-size:50px;border-radius:10px}.btn-main.qs-a{box-shadow:0 0 0 4px rgba(55,65,81,.8);outline-offset:2px}
+.row{display:flex;gap:8px;flex-wrap:wrap}.actions{margin-top:6px;display:flex;gap:8px;flex-wrap:wrap}
+
+/* === Schriftanpassung Beschriftung Modal .kv>div / px Anpassung für Schriftgröße === */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;z-index:50;align-items:center;justify-content:center;padding:18px}
+.modal{background:var(--card);border-radius:16px;max-width:980px;width:96vw;max-height:92vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,.22);border:1px solid var(--line)}#lb .modal{border:0;box-shadow:none}
+.modal header{background:linear-gradient(180deg,var(--g1),var(--g2));padding:18px;border-bottom:1px solid var(--line);display:flex;justify-content:center;align-items:center;gap:10px}
+
+/* === Überschrift Modale === */
+.modal header h3{margin:0;font-size:20px;color:#2e5f95;font-weight:900;display:flex;align-items:center;gap:10px}[data-theme="dark"] .modal header h3{color:#93c5fd}
+.modal .cnt{padding:16px;overflow:auto}.kv{display:grid;grid-template-columns:28% 1fr;gap:12px;align-items:center;margin-bottom:12px}@media(max-width:720px){.kv{grid-template-columns:1fr}}
+
+/* === Max Bilder Beschriftung === */
+.modal .ftr{border-top:1px solid var(--line);padding:12px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.ftr .leftg,.ftr .rightg{display:flex;gap:12px;align-items:center}.ftr .hint{color:#64748b;font-size:17px}
+
+/* === Modal Beschriftung Auswahlfelder und normale eingabefelder Beschriftung (Raum / Bemerkung)=== */
+.kv>div:first-child{font-size:18px;font-weight:600;color:#334155}[data-theme="dark"] .kv>div:first-child{color:#cbd5e1}
+.kv{border-bottom:0px solid rgba(0,0,0,.20);padding-bottom:10px;margin-bottom:10px}
+[data-theme="dark"] .kv{border-color:rgba(255,255,255,.12)}
+.kv:last-child{border-bottom:0;margin-bottom:0;padding-bottom:0}
+
+/* === Bildgitter (Preview + Protokoll, mit nicht-verzerrten Thumbnails + Seitenlogik) === */
+#phBtns{display:inline-flex;gap:12px;flex-wrap:wrap}.divider{height:2px;background:#4f79aa;margin:10px 0;border-radius:1px}
+
+.gal{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.twrap{position:relative}
+.thumb{width:100%;aspect-ratio:1/1;object-fit:cover;border:2px solid #000;border-radius:12px;background:#000;cursor:pointer}
+
+/* Anzahl Bilder Modale */
+.num{position:absolute;top:8px;right:8px;background:rgba(30,41,59,.85);color:#fff;font-size:17px;padding:3px 8px;border-radius:12px}
+#lb.modal-bg{background:rgba(0,0,0,.95);padding:0}#lb .modal{position:fixed;inset:0;background:#000;border-radius:0;border:0;box-shadow:none;display:flex;flex-direction:column}
+.lb-body{position:relative;text-align:center;background:#000;touch-action:none;flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:0;margin:0}
+.lb-img{max-width:100vw;max-height:82vh;height:auto;display:block;margin:0 auto;background:#000;object-fit:contain}
+.iconbtn{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center}.iconbtn.active{outline:3px solid #f59e0b;outline-offset:2px}.iconbtn svg{width:22px;height:22px;fill:#fff}
+.lb-ar{position:fixed;bottom:18px;width:48px;height:48px;border-radius:12px;background:rgba(255,255,255,.55);display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,.9);box-shadow:0 10px 28px rgba(0,0,0,.45);cursor:pointer;z-index:140}
+.lb-ar svg{width:22px;height:22px;fill:#000}#lbPrev{left:18px}#lbNext{right:18px}#lbCloseX{position:fixed;top:18px;right:18px;z-index:140}
+.lb-tools{position:fixed;left:0;right:0;bottom:18px;display:flex;justify-content:center;gap:12px;z-index:140}
+
+/* Buttons Bildbearbeitung */
+.lb-tools .btn.iconbtn{display:flex;align-items:center;justify-content:center;gap:6px;min-width:130px;padding:8px 12px;font-size:17px;font-weight:600;border-radius:6px}.lb-tools .btn.iconbtn svg{width:18px;height:18px}.lb-tools .btn.iconbtn span{display:inline-block;line-height:1}.lb-tools .btn.iconbtn[disabled]{opacity:.6;cursor:not-allowed}
+
+/* ??? */
+.err{position:fixed;bottom:10px;right:10px;background:#111;color:#fff;padding:6px 10px;border-radius:8px;font-size:12px;opacity:.85;z-index:9999}.err.warn{background:#b91c1c}
+
+/* Chips in Modal Unterschrift */
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.chip{padding:4px 8px;border-radius:999px;font-size:12px;border:1px solid #e5e7eb;background:#eef2f7}.chip.ok{background:rgba(16,185,129,.14);border-color:rgba(16,185,129,.35);color:#065f46}.chip.warn{background:rgba(245,158,11,.14);border-color:rgba(245,158,11,.35);color:#7c3d00}
+.version{max-width:1100px;margin:8px auto 30px;color:#6b7280;font-size:12px;text-align:center}
+#db .modal{max-width:520px}#db .msg{padding:10px 16px;color:#1f2937}[data-theme="dark"] #db .msg{color:#e5e7eb}
+.item.status-ok::before,.item.status-missing::before{content:'';position:absolute;right:0;top:0;bottom:0;width:12px;border-radius:0 12px 12px 0;pointer-events:none}.item.status-ok::before{background:rgba(16,185,129,.35)}.item.status-missing::before{background:rgba(239,68,68,.35)}
+
+/* ??? */
+.kv input.invalid,.kv select.invalid,.kv textarea.invalid{background:rgba(239,68,68,.12)}.kv .reqlabel{font-size:12px;color:#b91c1c;margin-top:4px;display:none}.kv .reqlabel.on{display:block}
+
+/* Chips in HAUPT UI Unterschrift */
+.sigbar{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 10px}.sigpill{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;font-size:12px;border:1px solid var(--line)}.sigpill.ok{background:rgba(16,185,129,.14);border-color:rgba(16,185,129,.35);color:#065f46}.sigpill.pending{background:rgba(245,158,11,.14);border-color:rgba(245,158,11,.35);color:#7c3d00}.sigpill .dot{width:8px;height:8px;border-radius:50%;background:currentColor}
+#lbLock{position:fixed;bottom:82px;left:50%;transform:translateX(-50%);width:24px;height:24px;border:3px solid rgba(255,255,255,.6);border-top-color:rgba(255,255,255,1);border-radius:50%;animation:sp .6s linear infinite;display:none;z-index:160}@keyframes sp{to{transform:translateX(-50%) rotate(360deg)}}
+input.invalid,select.invalid,textarea.invalid{background:rgba(239,68,68,.10)!important}
+
+</style>
+
+
+
+<style id="previewStyles">#previewModal{display:none;position:fixed;inset:0;background:#000;z-index:9999;justify-content:center;align-items:flex-start;overflow:hidden}#previewWrapper{position:relative;display:flex;flex-direction:column;align-items:center;width:100%;height:100%;padding:4vh 0 8vh}#previewScrollArea{background:#fff;border:2px solid #111;border-radius:14px;box-shadow:0 0 80px rgba(255,255,255,0.25);width:92vw;max-width:1800px;min-width:600px;overflow-y:auto;max-height:80vh;padding:40px;transition:all .3s ease-in-out}@media(max-width:1024px){#previewScrollArea{width:95vw;padding:30px;max-height:85vh}}@media(max-width:768px){#previewScrollArea{width:98vw;padding:22px;max-height:90vh}}#previewButtons{margin:30px 0 20px;display:flex;justify-content:center;gap:24px;flex-wrap:wrap}#previewButtons button{padding:14px 28px;font-size:18px;font-weight:600;border:none;border-radius:8px;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.25);transition:background .2s,transform .1s}#previewButtons button:active{transform:scale(.97)}#btnClosePreview{background:#f59e0b;color:#fff;min-width:180px}#btnApprovePreview{background:#10b981;color:#fff;min-width:160px}#previewScrollArea::-webkit-scrollbar{width:10px}#previewScrollArea::-webkit-scrollbar-thumb{background:#888;border-radius:6px}#previewScrollArea::-webkit-scrollbar-thumb:hover{background:#555}</style></head>
+
+
+
+<body style="overscroll-behavior: none;">
+
+
+
+
+<!-- === Systemelemente / Fehleranzeige & SVG-Icons === --><div id="err" class="err warn" style="display:none;">JS-Fehler: Uncaught TypeError: Cannot read properties of undefined (reading 't')</div><svg style="position:absolute;width:0;height:0;overflow:hidden"><symbol id="i-building" viewBox="0 0 24 24"><path d="M3 21h18v-2H3v2Zm2-4h3v-3H5v3Zm0-5h3V9H5v3Zm0-5h3V4H5v3Zm5 10h3v-3h-3v3Zm0-5h3V9h-3v3Zm0-5h3V4h-3v3Zm5 10h3v-3h-3v3Zm0-5h3V9h-3v3Zm0-5h3V4h-3v3Z"></path></symbol><symbol id="i-user" viewBox="0 0 24 24"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z"></path></symbol><symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5v8a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-8Z"></path></symbol><symbol id="i-sofa" viewBox="0 0 24 24"><path d="M4 12V8h12a4 4 0 0 1 4 4v4h-2v2h-2v-2H6v2H4v-2H2v-4a2 2 0 0 1 2-2Z"></path></symbol><symbol id="i-meter" viewBox="0 0 24 24"><path d="M12 2a9 9 0 1 0 9 9h-2a7 7 0 1 1-7-7V2Zm0 8 5-4-4 5 4 1-5-2Z"></path></symbol><symbol id="i-alarm" viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0-9 9h18a9 9 0 0 0-9-9Z" fill="currentColor"></path><path d="M3 12h18v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3Z" fill="currentColor"></path><circle cx="12" cy="9" r="1.5" fill="#fff"></circle></symbol><symbol id="i-key" viewBox="0 0 24 24"><path d="M7 14a5 5 0 1 1 4.2 4.9L10 21H8l-1-1v-2l2-2h1l1-1" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></symbol><symbol id="i-note" viewBox="0 0 24 24"><path d="M5 2h10l4 4v14a2 2 0 0 1-2 2H5a2 2 0 0 0-2-2V4a2 2 0 0 1 2-2Zm9 1v4h4"></path></symbol><symbol id="i-sign" viewBox="0 0 24 24"><path d="M3 19c7-5 11 5 18-2" stroke="currentColor" stroke-width="2" fill="none"></path></symbol><symbol id="i-pen" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25ZM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83Z"></path></symbol><symbol id="i-cross" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"></path></symbol><symbol id="i-return" viewBox="0 0 24 24"><path d="M20 7v6H8l4-4-1.4-1.4L4 14l6.6 6.6L12 19l-4-4h12a4 4 0 0 0 4-4V7z" fill="currentColor"></path></symbol><symbol id="i-left" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></symbol><symbol id="i-right" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></symbol><symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="currentColor"></circle><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4" stroke="currentColor" stroke-width="2"></path></symbol><symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" fill="currentColor"></path></symbol></svg><!-- === Haupt-UI === --><div class="top"><div></div><div class="title"><svg class="logo" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-home" fill="#fff"></use></svg><h1>Abnahme-/Übergabeprotokoll</h1></div><div class="grp"><button class="bbtn" onclick="manageData()"><svg class="icon"><use href="#i-building"></use></svg> Daten verwalten</button><button class="tgl" id="themeTgl" onclick="toggleTheme()"><svg><use href="#i-moon"></use></svg><span>Dark</span></button></div></div><div class="wrap"><section class="card"><div class="hdr"><svg class="ico"><use href="#i-home"></use></svg> Stammdaten / Wohnung</div><div class="grid"><div><label>Vermieter</label><select id="v" class=""><option value="">- Auswahl -</option><option value="0">NEU</option><option value="1">Hans Wurst verm.</option></select></div><div><label>Datum Protokollierung</label><input type="date" id="dp" class="invalid"></div><div><label>Liegenschaft</label><select id="h" class=""><option value="">- Auswahl -</option><option value="0">NEU</option><option value="1">Wurststr. 5 in 600000 Wurststadt</option></select></div><div><label>Sachbearbeiter</label><select id="s" class=""><option value="">- Auswahl -</option><option value="0">NEU</option><option value="1">Sachbearbeiter Wurst</option></select></div><div style="grid-column:1/-1"><div class="divider"></div></div><div><label>Übergabeart</label><select id="ua" onchange="applyMode();save()" class=""><option value="">- Auswahl -</option><option value="einzug">Einzug</option><option value="auszug">Auszug</option><option value="wechsel">Auszug &amp; Einzug</option></select></div><div><label>Position der Wohnung</label><input id="wp" placeholder="z. B. 1. OG links / DG rechts" oninput="save()" class=""></div><div style="grid-column:1/-1"><label>Ausstattung gesamt</label><textarea id="wa" placeholder="z. B. Parkett, EBK, Rollläden, Balkon …" oninput="save()" class=""></textarea></div></div></section><section class="card"><div class="hdr"><svg class="ico"><use href="#i-user"></use></svg> Mieter &amp; Bewohner</div><div id="out" class="grid" style="display:grid;"><div style="grid-column:1/-1"><label>Auszugsdatum</label><input type="date" id="da" oninput="onAuszugDate()" class=""></div><div><label>Ausziehender Hauptmieter 1</label><input id="o1" oninput="save()"><label>Ausziehender Hauptmieter 2 (optional)</label><input id="o2" oninput="save()"><label>Mieternummer (Auszug)</label><input id="on" oninput="save()" class=""><label>E-Mail (Auszug)</label><input id="oe" type="email" placeholder="name@example.com" oninput="save()" class=""><label>Neue Adresse</label><input id="oa" oninput="save()" class=""></div><div><label>Ausziehender Bewohner</label><div class="row"><input id="boi" placeholder="Name"><button class="btn-main" onclick="addBew(0)">Hinzufügen</button></div><div id="bol" class="list" style="margin-top:8px"></div></div></div><div id="divx" class="divider" style="display:block;"></div><div id="inc" class="grid" style="display:grid;"><div style="grid-column:1/-1"><label>Einzugsdatum</label><input type="date" id="de" oninput="onEinzugDate()" class=""></div><div><label>Einziehender Hauptmieter 1</label><input id="i1" oninput="save()"><label>Einziehender Hauptmieter 2 (optional)</label><input id="i2" oninput="save()"><label>Mieternummer (Einzug)</label><input id="inr" oninput="save()"><label>E-Mail (Einzug)</label><input id="ie" type="email" placeholder="name@example.com" oninput="save()" class=""></div><div><label>Einziehender Bewohner</label><div class="row"><input id="bei" placeholder="Name"><button class="btn-main" onclick="addBew(1)">Hinzufügen</button></div><div id="bel" class="list" style="margin-top:8px"></div></div></div></section><section class="card"><div class="hdr"><svg class="ico"><use href="#i-sofa"></use></svg> Räume</div><div id="rl" class="list"><div class="item status-missing"><div class="item-head"><div class="left"><strong>Wohnzimmer</strong><div class="mut">Ausstattung: Laminat / Raufaser</div></div></div><div class="row"><button class="btn-main ok " onclick="setRoomOk(0, true)">In Ordnung</button><button class="btn-main warn " onclick="setRoomOk(0, false)">Nicht in Ordnung</button><button class="btn-main ghost" onclick="editRoom(0)">Bearbeiten</button><button class="btn-main dang" onclick="delRoom(0)">Löschen</button></div></div><div class="item status-missing"><div class="item-head"><div class="left"><strong>Diele</strong><div class="mut">Ausstattung: Laminat / Raufaser</div></div></div><div class="row"><button class="btn-main ok " onclick="setRoomOk(1, true)">In Ordnung</button><button class="btn-main warn " onclick="setRoomOk(1, false)">Nicht in Ordnung</button><button class="btn-main ghost" onclick="editRoom(1)">Bearbeiten</button><button class="btn-main dang" onclick="delRoom(1)">Löschen</button></div></div><div class="item status-missing"><div class="item-head"><div class="left"><strong>Bad</strong><div class="mut">Ausstattung: Bodenfliesen grau / Wandfliesen weiß</div></div></div><div class="row"><button class="btn-main ok " onclick="setRoomOk(2, true)">In Ordnung</button><button class="btn-main warn " onclick="setRoomOk(2, false)">Nicht in Ordnung</button><button class="btn-main ghost" onclick="editRoom(2)">Bearbeiten</button><button class="btn-main dang" onclick="delRoom(2)">Löschen</button></div></div></div><div class="actions"><button class="btn-main" onclick="editRoom()">Raum hinzufügen</button></div></section><section class="card"><div class="hdr"><svg class="ico"><use href="#i-meter"></use></svg> Zähler</div><div id="zl" class="list"><div class="item status-ok"><div class="item-head"><div class="left"><strong>Strom</strong><div class="mut">Nr: DZG1 0000 5555 6666 | Pos: Keller | Stand: 185</div></div></div><div class="row"><button class="btn-main ghost" onclick="editMeter(0)">Bearbeiten</button><button class="btn-main dang" onclick="delMeter(0)">Löschen</button></div></div><div class="item status-ok"><div class="item-head"><div class="left"><strong>Gas</strong><div class="mut">Nr: 888 555 | Pos: Bad | Stand: 5532</div></div></div><div class="row"><button class="btn-main ghost" onclick="editMeter(1)">Bearbeiten</button><button class="btn-main dang" onclick="delMeter(1)">Löschen</button></div></div></div><div class="actions"><button class="btn-main" onclick="editMeter()">Zähler hinzufügen</button></div></section><section class="card"><div class="hdr"><svg class="ico"><use href="#i-alarm"></use></svg> Rauchwarnmelder</div><div id="rw" class="list"><div class="item status-missing"><div class="item-head"><div class="left"><strong>Rauchwarnmelder</strong><div class="mut">Anzahl: 5 | Status: -</div></div></div><div class="row"><button class="btn-main ghost" onclick="editSmoke(0)">Bearbeiten</button></div></div></div></section><section class="card"><div class="hdr"><svg class="ico"><use href="#i-key"></use></svg> Schlüssel</div><div id="kl" class="list"><div class="item status-ok"><div class="item-head"><div class="left"><strong>Haustür</strong><div class="mut">Übergeben: 3 • Erhalten: 3</div></div></div><div class="row"><button class="btn-main ghost" onclick="editKey(0)">Bearbeiten</button><button class="btn-main dang" onclick="delKey(0)">Löschen</button></div></div><div class="item status-ok"><div class="item-head"><div class="left"><strong>Wohnungstür</strong><div class="mut">Übergeben: 2 • Erhalten: 2</div></div></div><div class="row"><button class="btn-main ghost" onclick="editKey(1)">Bearbeiten</button><button class="btn-main dang" onclick="delKey(1)">Löschen</button></div></div></div><div class="actions"><button class="btn-main" onclick="editKey()">Schlüssel hinzufügen</button></div></section><section class="card"><div class="hdr"><svg class="ico"><use href="#i-note"></use></svg> Anmerkungen / Sonstiges</div><label>Öffentliche Bemerkungen</label><textarea id="np" oninput="save()"></textarea><label>Interne Bemerkungen (nicht im PDF)</label><textarea id="ni" oninput="save()"></textarea></section><section class="card"><div class="hdr"><svg class="ico"><use href="#i-sign"></use></svg> Unterschriften</div><div id="sigbars" class="sigbar"><span class="sigpill pending"><span class="dot"></span>Einziehender Mieter – Horst Hauptmieter Einziehend 1</span><span class="sigpill ok"><span class="dot"></span>Einziehender Mieter – NEU</span><span class="sigpill pending"><span class="dot"></span>Ausziehender Mieter – Mark Hauptmieter Ausziehend 1</span><span class="sigpill pending"><span class="dot"></span>Hausverwaltung – Sachbearbeiter Wurst</span></div><div id="sig" class="list"><div class="item"><div class="item-head"><div class="left"><strong>Einziehender Mieter</strong><div class="mut">NEU</div></div><div class="row"><button class="btn ghost" onclick="viewSign(0)">Ansehen</button><button class="btn dang" onclick="delSign(0)">Löschen</button></div></div></div></div><div class="actions"><button class="btn-main" onclick="addSign()">Unterschrift hinzufügen</button><button class="btn-main warn" onclick="clearSigns()">Alle Unterschriften löschen</button></div></section><section class="card"><div class="hdr"><svg class="ico"><use href="#i-note"></use></svg> Verarbeitung</div><div class="actions"><button id="saveFileBtn" class="btn-main ok">💾 Datei speichern</button><button type="button" class="btn-main btn-green" onclick="exportPreview()">Protokoll erstellen</button></div></section><section class="card footer"><div class="version">Version: <b>V7X TEST</b> • STABIL“</div></section></div>
+<!-- === Modals === --><!-- Standard Modal --><div id="mb" class="modal-bg" style="display: none;"><div class="modal"><header><h3 class="req" id="mt">Unterschrift erfassen</h3></header><div class="cnt" id="mc"></div><div class="ftr"><div class="leftg"><span id="phBtns" style="display: none;"><button class="btn" onclick="photosUpload()">Bilder hochladen</button><button class="btn" onclick="photosCamera()">Bild aufnehmen</button><input id="fileUpload" type="file" accept="image/*" multiple="" style="display:none"><input id="fileCamera" type="file" accept="image/*" capture="environment" style="display:none"></span><button class="btn warn" id="mCancel" onclick="closeModal()" style="display: none;">Abbrechen</button></div><div class="rightg"><span class="hint" id="phHint" style="display: none;">Max. 20 Bilder</span><button class="btn ok" id="mSaveBtn">Speichern</button></div></div></div></div>
+<!-- Lightbox --><div id="lb" class="modal-bg"><div class="modal" style="position:relative"><div class="cnt lb-body"><img id="lbimg" class="lb-img" alt="Bild"><div class="lb-tools"><button id="lbMark" class="btn iconbtn" title="Markieren" onclick="lbToggleMark()"><svg><use href="#i-pen"></use></svg><span>Markieren</span></button><button id="lbUndo" class="btn warn iconbtn" title="Undo Markierung" onclick="lbUndo()" disabled=""><svg><use href="#i-return"></use></svg><span>Undo</span></button><button class="btn dang iconbtn" title="Löschen" onclick="lbDelete()"><svg><use href="#i-cross"></use></svg><span>Löschen</span></button></div><button id="lbPrev" class="lb-ar" onclick="lbPrev()" title="Vorheriges Bild"><svg><use href="#i-left"></use></svg></button><button id="lbNext" class="lb-ar" onclick="lbNext()" title="Nächstes Bild"><svg><use href="#i-right"></use></svg></button><button id="lbCloseX" class="lb-ar" style="top:18px;right:18px;bottom:auto" onclick="lbClose()" title="Schließen"><svg><use href="#i-cross"></use></svg></button></div></div></div>
+<!-- Editor --><div id="eb" class="modal-bg"><div class="modal"><header><h3>Bild markieren</h3></header><div class="cnt"><canvas id="cv"></canvas></div><div class="ftr"><div class="leftg"><button class="btn warn" onclick="eClear()">Leeren</button></div><div class="rightg"><button class="btn ok" onclick="eSave()">Speichern</button></div></div></div></div>
+<!-- Dialog Modal --><div id="db" class="modal-bg" style="display: none;"><div class="modal"><header><h3 id="dt">Bestätigung</h3></header><div class="cnt"><div id="dm" class="msg">Diese Unterschrift wirklich löschen?</div></div><div class="ftr"><div class="leftg"></div><div class="rightg" id="dbtns"><button class="btn">Nein</button><button class="btn ok">Ja</button></div></div></div></div>
+<div id="lbLock" aria-hidden="true"></div>
+
+
+
+
+
+
+
+<script>
+/* Basisfunktion und Initialisierung */
+function toast(msg,isWarn){var b=document.getElementById('err');b.textContent=msg;b.className='err'+(isWarn?' warn':'');b.style.display='block';clearTimeout(b._t);b._t=setTimeout(function(){b.style.display='none'},6000)}window.addEventListener('error',function(e){toast('JS-Fehler: '+(e.message||''),true)});
+function $(q){return document.querySelector(q)}function esc(s){s=s==null?'':String(s);return s.replace(/[&<>]/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[m]})}
+function gv(id){var el=document.getElementById(id);if(!el)return'';var v=el.value;return (v==null?'':String(v)).trim()}
+function gvm(id){var c=document.getElementById('mc');if(c){var el=c.querySelector('[id=\"'+id+'\"]');if(el&&el.value!=null)return (''+el.value).trim()}return gv(id)}
+var LV=[],LH=[],LS=[],BI=[],BO=[],RR=[],ZZ=[],SS=[],KK=[],SG=[];
+var SEL = {};
+
+/* Stammdaten verwalten */
+function manageData(){const html=`<div class="kv"><div>Vermieter</div><div><textarea id="lvInput" placeholder="Ein Eintrag pro Zeile: Name, Adresse, Telefon, E-Mail">${LV.map(v=>`${v.n}, ${v.adr||''}, ${v.tel||''}, ${v.mail||''}`).join('\n')}</textarea></div></div><div class="kv"><div>Liegenschaften</div><div><textarea id="lhInput" placeholder="Ein Eintrag pro Zeile">${LH.join('\n')}</textarea></div></div><div class="kv"><div>Sachbearbeiter</div><div><textarea id="lsInput" placeholder="Ein Eintrag pro Zeile">${LS.join('\n')}</textarea></div></div><div class="kv"><div>Einziehender Bewohner</div><div><textarea id="biInput" placeholder="Ein Eintrag pro Zeile">${BI.join('\n')}</textarea></div></div><div class="kv"><div>Ausziehender Bewohner</div><div><textarea id="boInput" placeholder="Ein Eintrag pro Zeile">${BO.join('\n')}</textarea></div></div>`;openModal("Stammdaten verwalten",html,function(){LV=[];const lvLines=gvm("lvInput").split("\n").map(x=>x.trim()).filter(Boolean);lvLines.forEach(line=>{const parts=line.split(",");LV.push({n:(parts[0]||"").trim(),adr:(parts[1]||"").trim(),tel:(parts[2]||"").trim(),mail:(parts[3]||"").trim()})});LH=gvm("lhInput").split("\n").map(x=>x.trim()).filter(Boolean);LS=gvm("lsInput").split("\n").map(x=>x.trim()).filter(Boolean);BI=gvm("biInput").split("\n").map(x=>x.trim()).filter(Boolean);BO=gvm("boInput").split("\n").map(x=>x.trim()).filter(Boolean);qOpt($('#v'),LV,x=>x.n);qOpt($('#h'),LH);qOpt($('#s'),LS);renderBew();save&&save();toast("Stammdaten aktualisiert und dauerhaft gespeichert.");return true})}
+
+/* Strikte Validierung */
+function isRoomComplete(r){ return !!(r && r.n && r.a && (r.ok===true || r.ok===false)); }
+function isMeterComplete(m){ return !!(m && m.t && m.nr && m.p && String(m.st||'').trim()); }
+function isSmokeComplete(s){ return !!(s && (s.n!=='' && s.n!=null) && s.st); }
+function isKeyComplete(k){ return !!(k && k.n && k.u && k.e); }
+
+/* Pflichtfeld-Markierung im Modal */
+function markModalRequired(modEl,type){
+function setInvalid(id,bad){var el=modEl.querySelector('#'+id);if(!el)return false;if(bad){el.classList.add('invalid');}else{el.classList.remove('invalid');}var lab=el.closest('.kv')&&el.closest('.kv').querySelector('.reqlabel');if(lab){lab.classList.toggle('on',bad);}return!!bad;}try{var req=modEl.querySelectorAll('.req');req.forEach(function(el){if(el._reqSoftBound)return;el._reqSoftBound=true;el.addEventListener('blur',function(){try{markModalRequired(modEl,type);}catch(_e){}},{passive:true});el.addEventListener('input',function(){try{markModalRequired(modEl,type);}catch(_e){}},{passive:true});});}catch(_e){}if(type==='room'){setInvalid('rn',!gvm('rn'));setInvalid('ra',!gvm('ra'));setInvalid('rstat',!gvm('rstat'));}else if(type==='meter'){setInvalid('mt',!gvm('mt'));setInvalid('mnr',!gvm('mnr'));setInvalid('mp',!gvm('mp'));setInvalid('ms',!String(gvm('ms')||'').trim());}else if(type==='smoke'){setInvalid('sn',(gvm('sn')===''||gvm('sn')==null));setInvalid('sst',!gvm('sst'));}else if(type==='key'){setInvalid('kn',!gvm('kn'));setInvalid('ku',!gvm('ku'));setInvalid('ke',!gvm('ke'));}return true;}
+
+/* FORMULAR- UND BEWOHNERLOGIK */
+function setVal(id,val){var el=document.getElementById(id);if(el!=null&&val!=null)el.value=val}
+function qOpt(sel,arr,map){sel.innerHTML='<option value=\"\">- Auswahl -</option>';arr.forEach(function(x,i){var o=document.createElement('option');o.value=i;o.textContent=map?map(x):x;sel.appendChild(o)})}
+function applyMode(){var a=$('#ua').value;$('#out').style.display=(a==='auszug'||a==='wechsel')?'grid':'none';$('#inc').style.display=(a==='einzug'||a==='wechsel')?'grid':'none';$('#divx').style.display=(a==='wechsel')?'block':'none';save();if(typeof autoValidateMainForm==="function")autoValidateMainForm();}
+function onAuszugDate(){if($('#ua').value!=='wechsel')return;var d=new Date($('#da').value);if(!isNaN(d)){d.setDate(d.getDate()+1);$('#de').value=d.toISOString().slice(0,10);$('#de').dispatchEvent(new Event('input',{bubbles:true}));$('#de').dispatchEvent(new Event('change',{bubbles:true}));}save();if(typeof validateMainForm==='function')validateMainForm();}
+function onEinzugDate(){if($('#ua').value!=='wechsel')return;var d=new Date($('#de').value);if(!isNaN(d)){d.setDate(d.getDate()-1);$('#da').value=d.toISOString().slice(0,10);$('#da').dispatchEvent(new Event('input',{bubbles:true}));$('#da').dispatchEvent(new Event('change',{bubbles:true}));}save();if(typeof validateMainForm==='function')validateMainForm();}
+function renderBew(){var bol=$('#bol'),bel=$('#bel');bol.innerHTML=BO.map(function(n,i){return '<div class=\"item\"><div class=\"item-head\"><div class=\"left\"><strong>'+esc(n)+'</strong></div><div class=\"row\"><button class=\"btn sm dang\" onclick=\"delBew(0,'+i+')\">Löschen</button></div></div></div>'}).join('');bel.innerHTML=BI.map(function(n,i){return '<div class=\"item\"><div class=\"item-head\"><div class=\"left\"><strong>'+esc(n)+'</strong></div><div class=\"row\"><button class=\"btn sm dang\" onclick=\"delBew(1,'+i+')\">Löschen</button></div></div></div>'}).join('')}
+function addBew(type){var inp=type?$('#bei'):$('#boi');var n=(inp.value||'').trim();if(!n)return;(type?BI:BO).push(n);inp.value='';renderBew();save();if(typeof renderSigBars==='function')renderSigBars();if(typeof renderSigBarsModal==='function')renderSigBarsModal();if(typeof renderSigns==='function')renderSigns();}
+
+/* Dialog helpers */
+var DLG={cb:null};function showConfirm(msg,yesCb,yesTxt='Ja',noTxt='Nein'){DLG.cb=yesCb;$('#dt').textContent='Bestätigung';$('#dm').textContent=msg;var b=$('#dbtns');b.innerHTML='';var n=document.createElement('button');n.className='btn';n.textContent=noTxt;n.onclick=function(){$('#db').style.display='none'};var y=document.createElement('button');y.className='btn ok';y.textContent=yesTxt;y.onclick=function(){var cb=DLG.cb;DLG.cb=null;$('#db').style.display='none';cb&&cb()};b.appendChild(n);b.appendChild(y);$('#db').style.display='flex'}
+function showAlert(msg,okTxt='OK'){DLG.cb=null;$('#dt').textContent='Hinweis';$('#dm').textContent=msg;var b=$('#dbtns');b.innerHTML='';var o=document.createElement('button');o.className='btn ok';o.textContent=okTxt;o.onclick=function(){$('#db').style.display='none'};b.appendChild(o);$('#db').style.display='flex'}
+function delBew(type,i){showConfirm('Eintrag wirklich löschen?',function(){(type?BI:BO).splice(i,1);renderBew();save();if(typeof renderSigBars==='function')renderSigBars();if(typeof renderSigBarsModal==='function')renderSigBarsModal();if(typeof renderSigns==='function')renderSigns();});}
+
+/* Render Sektionen */
+function renderRooms(){const c=$('#rl');if(!c)return;c.innerHTML='';RR=Array.isArray(RR)?RR.filter(r=>r&&typeof r==='object'&&typeof r.n==='string'):[];RR.forEach((r,i)=>{const __cls=isRoomComplete(r)?'status-ok':'status-missing';const fotos=(r.ph&&r.ph.length)?` • Fotos: ${r.ph.length}`:'';const bemerkung=(r.ok===false)?`<div><label>Bemerkung</label><textarea oninput="editRoomRemark(${i}, this.value)">${esc(r.rm||'')}</textarea></div>`:'';const html=`<div class="item ${__cls}"><div class="item-head"><div class="left"><strong>${esc(r.n)}</strong><div class="mut">Ausstattung: ${esc(r.a||'–')}${fotos}</div></div></div><div class="row"><button class="btn-main ok ${r.ok===true?'qs-a':''}" onclick="setRoomOk(${i}, true)">In Ordnung</button><button class="btn-main warn ${r.ok===false?'qs-a':''}" onclick="setRoomOk(${i}, false)">Nicht in Ordnung</button><button class="btn-main ghost" onclick="editRoom(${i})">Bearbeiten</button><button class="btn-main dang" onclick="delRoom(${i})">Löschen</button></div>${bemerkung}</div>`;c.insertAdjacentHTML('beforeend',html);});}
+function setRoomOk(i,ok){if(!Array.isArray(RR)||i<0||i>=RR.length||!RR[i]){console.warn('⚠️ Ungültiger Raumindex:',i,RR);return;}if(typeof RR[i]!=='object'){RR[i]={n:'',a:'',ok:null,rm:'',ph:[]};}RR[i].ok=!!ok;if(ok)RR[i].rm='';renderRooms();save();}
+function delRoom(i){showConfirm('Diesen Raum wirklich löschen?',function(){RR.splice(i,1);renderRooms();save()})}
+function editRoomRemark(i,val){RR[i].rm=val;save()}
+function renderMeters(){var c=$('#zl');c.innerHTML='';ZZ.forEach(function(m,i){var el=document.createElement('div');var __cls=(isMeterComplete(m)?'status-ok':'status-missing');el.className='item '+__cls;el.innerHTML='<div class="item-head"><div class="left"><strong>'+esc(m.t)+'</strong><div class="mut">Nr: '+esc(m.nr)+' | Pos: '+esc(m.p)+' | Stand: '+esc(m.st)+(m.pv?(' (Vorjahr: '+esc(m.pv)+')'):'')+(m.bm?(' • '+esc(m.bm)):'')+(m.ph&&m.ph.length?(' • Fotos: '+m.ph.length):'')+'</div></div></div><div class="row"><button class="btn-main ghost" onclick="editMeter('+i+')">Bearbeiten</button><button class="btn-main dang" onclick="delMeter('+i+')">Löschen</button></div>';c.appendChild(el)})}
+function delMeter(i){showConfirm('Diesen Zähler wirklich löschen?',function(){ZZ.splice(i,1);renderMeters();save()})}
+function renderSmokes(){var c=$('#rw');if(!c)return;c.innerHTML='';var s=SS[0]||{n:'',st:'',bm:'',ph:[]};var complete=(s.n&&s.st);var el=document.createElement('div');el.className='item '+(complete?'status-ok':'status-missing');el.innerHTML='<div class="item-head"><div class="left"><strong>Rauchwarnmelder</strong><div class="mut">'+(s.n?'Anzahl: '+esc(s.n)+' | Status: '+esc(s.st||'-')+(s.bm?' • '+esc(s.bm):'')+(s.ph&&s.ph.length?' • Fotos: '+s.ph.length:''):'Noch keine Angaben.')+'</div></div></div><div class="row"><button class="btn-main ghost" onclick="editSmoke(0)">Bearbeiten</button></div>';c.appendChild(el);}
+function delSmoke(i){showConfirm('Diesen Eintrag wirklich löschen?',function(){SS.splice(i,1);renderSmokes();save()})}
+function renderKeys(){var c=$('#kl');c.innerHTML='';KK.forEach(function(k,i){var el=document.createElement('div');var __cls=(isKeyComplete(k)?'status-ok':'status-missing');el.className='item '+__cls;el.innerHTML='<div class="item-head"><div class="left"><strong>'+esc(k.n)+'</strong><div class="mut">Übergeben: '+esc(k.u||'-')+' • Erhalten: '+esc(k.e||'-')+(k.b?(' • '+esc(k.b)):'')+(k.ph&&k.ph.length?(' • Fotos: '+k.ph.length):'')+'</div></div></div><div class="row"><button class="btn-main ghost" onclick="editKey('+i+')">Bearbeiten</button><button class="btn-main dang" onclick="delKey('+i+')">Löschen</button></div>';c.appendChild(el)})}
+function delKey(i){showConfirm('Diesen Schlüssel wirklich löschen?',function(){KK.splice(i,1);renderKeys();save()})}
+
+/* Modals */
+function openModal(title,html,saveFn){$('#mt').textContent=title;$('#mc').innerHTML=html;$('#mb').style.display='flex';try{var _type=(title.indexOf('Raum')>-1)?'room':(title.indexOf('Zähler')>-1)?'meter':(title.indexOf('Rauchwarnmelder')>-1)?'smoke':(title.indexOf('Schlüssel')>-1)?'key':null;if(_type){setTimeout(function(){markModalRequired(document.getElementById('mb'),_type);},20);}}catch(_e){}var hasGal=!!document.querySelector('#gallery');$('#phBtns').style.display=hasGal?'inline-flex':'none';$('#phHint').style.display=hasGal?'inline':'none';var b=$('#mSaveBtn');b.onclick=function(){document.activeElement&&document.activeElement.blur();var ok=saveFn();if(ok!==false)closeModal();};$('#mCancel').style.display='';}
+function closeModal(){$('#mb').style.display='none';$('#mc').innerHTML='';CURRENT_PHOTOS=null;var fl=document.querySelector('#mb .ftr .leftg');if(fl){fl.querySelectorAll('.sig-ctl').forEach(function(n){n.remove()})}}const PH_MAX=20;let CURRENT_PHOTOS=null,CURRENT_INDEX=0;
+
+/* Robustes Initialisieren von Bildern */
+function photosInit(arr){try{if(!Array.isArray(arr))arr=[];const v=arr.filter(p=>typeof p==="string"&&/^data:image\//.test(p));if(v.length===0){CURRENT_PHOTOS=[];const g=document.getElementById("gallery");if(g)g.innerHTML='<div class="mut">Keine Fotos vorhanden.</div>';console.warn("⚠️ Keine gültigen Fotos gefunden.");return;}CURRENT_PHOTOS=v.slice();Promise.allSettled(v.map(src=>new Promise(r=>{const i=new Image();i.onload=()=>r(true);i.onerror=()=>r(false);i.src=src;}))).then(()=>{if(typeof galleryRender==="function")galleryRender()});}catch(e){console.error("❌ Fehler in photosInit():",e);CURRENT_PHOTOS=[]}}function hasValidPhotos(a){return Array.isArray(a)&&a.some(p=>typeof p==="string"&&/^data:image\//.test(p));}
+
+/* Erstellt HTML für die Vorschaubilder (Thumbnails) */
+function galleryRender(){const g=$('#gallery');if(!g||!CURRENT_PHOTOS)return;g.innerHTML='<div class="gal">'+CURRENT_PHOTOS.map((p,i)=>`<div class="twrap"><img class="thumb" src="${p}" alt="Foto ${i+1}" onclick="lbOpen(${i})"/><span class="num">${i+1} / ${CURRENT_PHOTOS.length}</span></div>`).join('')+'</div>';save();}
+
+/* Komprimiert Bilder auf moderate Größe */
+async function compressDataURL(dataUrl,maxW=1400,maxH=1400,quality=0.82){return new Promise(res=>{const img=new Image();img.onload=function(){const iw=img.width,ih=img.height,sc=Math.min(maxW/iw,maxH/ih,1),cw=Math.round(iw*sc),ch=Math.round(ih*sc);const c=document.createElement('canvas'),x=c.getContext('2d');c.width=cw;c.height=ch;x.fillStyle='#fff';x.fillRect(0,0,cw,ch);x.drawImage(img,0,0,cw,ch);res(c.toDataURL('image/jpeg',quality));};img.src=dataUrl;});}
+
+/* Öffnet Dateiauswahl oder Kamera */
+function photosUpload(){if(!CURRENT_PHOTOS){showAlert('Fotos sind hier nicht verfügbar.');return;}$('#fileUpload').click();}
+function photosCamera(){if(!CURRENT_PHOTOS){showAlert('Fotos sind hier nicht verfügbar.');return;}$('#fileCamera').click();}
+
+/* Fotomanagment - Dateihandling und Initialisierung */
+document.addEventListener('DOMContentLoaded',function(){const fu=$('#fileUpload');const fc=$('#fileCamera');async function handleFiles(e){if(!CURRENT_PHOTOS)return;const files=e.target.files||[];const canAdd=Math.max(0,PH_MAX-CURRENT_PHOTOS.length);const toAdd=Math.min(files.length,canAdd);for(let i=0;i<toAdd;i++){const f=files[i];await new Promise(done=>{const r=new FileReader();r.onload=async x=>{const comp=await compressDataURL(x.target.result);CURRENT_PHOTOS.push(comp);galleryRender();if(window.hideBusy)try{hideBusy();}catch(_e){}done();};r.readAsDataURL(f);});}}if(fu)fu.addEventListener('change',handleFiles);if(fc)fc.addEventListener('change',handleFiles);});
+
+/* Inline-Markieren im Vollbild */
+var LBM={active:false,c:null,ctx:null,dpr:1,stack:[],dirty:false};
+function lbStageRect(){var im=document.getElementById('lbimg');var bd=document.querySelector('#lb .lb-body');var ir=im.getBoundingClientRect(), br=bd.getBoundingClientRect();return {left:ir.left-br.left, top:ir.top-br.top, width:ir.width, height:ir.height}}
+function lbCreateOverlay(){var im=document.getElementById('lbimg');var r=lbStageRect();var old=document.getElementById('lbov');if(old)old.remove();var c=document.createElement('canvas');c.id='lbov';c.style.position='absolute';c.style.left=r.left+'px';c.style.top=r.top+'px';c.style.pointerEvents='none';c.style.zIndex='30';c.style.touchAction='none';c.width=Math.max(1,Math.floor(r.width*(window.devicePixelRatio||1)));c.height=Math.max(1,Math.floor(r.height*(window.devicePixelRatio||1)));c.style.width=r.width+'px';c.style.height=r.height+'px';document.querySelector('#lb .lb-body').appendChild(c);var x=c.getContext('2d');x.scale(window.devicePixelRatio||1,window.devicePixelRatio||1);x.fillStyle='rgba(0,0,0,0)';x.fillRect(0,0,c.width,c.height);LBM.c=c;LBM.ctx=x;LBM.dpr=(window.devicePixelRatio||1);LBM.stack=[];LBM.dirty=false;var drawing=false,lx=null,ly=null;function rel(ev){var rr=im.getBoundingClientRect();return{x:(ev.clientX-rr.left),y:(ev.clientY-rr.top)}}function push(){try{LBM.stack.push(c.toDataURL())}catch(_e){}}c.onpointerdown=function(e){if(!LBM.active)return;e.preventDefault();drawing=true;lx=ly=null;push()};c.onpointerup=function(e){drawing=false;updateUndoBtn()};c.onpointercancel=function(){drawing=false};c.onpointermove=function(e){if(!LBM.active||!drawing)return;e.preventDefault();var p=rel(e);if(lx==null){lx=p.x;ly=p.y}var x=LBM.ctx;x.lineWidth=5;x.lineCap='round';x.strokeStyle='#ef4444';x.beginPath();x.moveTo(lx,ly);x.lineTo(p.x,p.y);x.stroke();lx=p.x;ly=p.y;LBM.dirty=true};c.addEventListener('touchmove',function(e){e.preventDefault()},{passive:false});c.style.pointerEvents='auto';updateUndoBtn();}
+function lbRemoveOverlay(){ if(LBM.c){ LBM.c.remove(); LBM.c=null; LBM.ctx=null; } updateUndoBtn() }
+function lbCommitOverlay(){if(!LBM||!LBM.c||!LBM.ctx)return;if(!LBM.dirty)return;try{var im=document.getElementById('lbimg');var base=new Image();base.src=im.src;var ovData=null;try{ovData=LBM.c.toDataURL();}catch(_e){ovData=null;}base.onload=function(){if(!ovData)return;var ov=new Image();ov.onload=function(){var tmp=document.createElement('canvas'),xt=tmp.getContext('2d');tmp.width=ov.width;tmp.height=ov.height;xt.drawImage(base,0,0,tmp.width,tmp.height);xt.drawImage(ov,0,0);var merged=tmp.toDataURL('image/jpeg',0.92);CURRENT_PHOTOS[CURRENT_INDEX]=merged;im.src=merged;galleryRender();if(window.hideBusy)try{hideBusy()}catch(_e){}};ov.src=ovData;};}catch(e){console.warn(e)}}
+function lbToggleMark(){var btn=document.getElementById('lbMark');LBM.active=!LBM.active;if(LBM.active){btn.classList.add('active');lbCreateOverlay();}else{let o=document.getElementById('pdfBusy');if(!o){o=document.createElement('div');o.id='pdfBusy';o.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:99999';o.innerHTML='<div style="width:72px;height:72px;border-radius:50%;border:8px solid #fff;border-top-color:transparent;animation:sp 1s linear infinite"></div><style>@keyframes sp{to{transform:rotate(1turn)}}</style>';document.body.appendChild(o);}else o.style.display='flex';setTimeout(async()=>{try{lbCommitOverlay();await new Promise(r=>setTimeout(r,750));}catch(e){console.error(e);}o.style.display='none';btn.classList.remove('active');lbRemoveOverlay();},150);}}
+function lbUndo(){if(!LBM.c||LBM.stack.length===0)return;var img=new Image();img.onload=function(){LBM.ctx.setTransform(1,0,0,1,0,0);LBM.ctx.scale(LBM.dpr,LBM.dpr);LBM.ctx.clearRect(0,0,LBM.c.width,LBM.c.height);LBM.ctx.drawImage(img,0,0);updateUndoBtn()};img.src=LBM.stack.pop();}
+function updateUndoBtn(){ var u=document.getElementById('lbUndo'); if(!u) return; u.disabled = !(LBM.c && LBM.stack.length>0) }
+function lbUpdateOverlayPos(){if(!LBM||!LBM.c)return;var r=lbStageRect();if(!r||!LBM.c)return;LBM.c.style.left=r.left+'px';LBM.c.style.top=r.top+'px';LBM.c.style.width=r.width+'px';LBM.c.style.height=r.height+'px';LBM.c.width=Math.max(1,Math.floor(r.width*(window.devicePixelRatio||1)));LBM.c.height=Math.max(1,Math.floor(r.height*(window.devicePixelRatio||1)));if(LBM.ctx){LBM.ctx.setTransform(1,0,0,1,0,0);LBM.ctx.scale(window.devicePixelRatio||1,window.devicePixelRatio||1);}}(function(){window.addEventListener('resize',lbUpdateOverlayPos);})();
+function lbOpen(i){if(!CURRENT_PHOTOS||CURRENT_PHOTOS.length===0)return;CURRENT_INDEX=i;document.documentElement.style.overflow='hidden';document.body.style.overflow='hidden';$('#lb').style.display='flex';lbUpdate(); if(LBM.active){ setTimeout(lbCreateOverlay,50) }}
+function lbClose(){ if(LBM.active){lbCommitOverlay(); LBM.active=false; var b=document.getElementById('lbMark'); if(b)b.classList.remove('active'); } lbRemoveOverlay(); $('#lb').style.display='none'; document.documentElement.style.overflow=''; document.body.style.overflow='' }
+function lbUpdate(){var arr=CURRENT_PHOTOS||[];$('#lbimg').src=arr[CURRENT_INDEX]||'';document.getElementById('lbPrev').style.display=(CURRENT_INDEX>0?'inline-flex':'none');document.getElementById('lbNext').style.display=(CURRENT_INDEX<arr.length-1?'inline-flex':'none'); lbRemoveOverlay(); if(LBM.active){ setTimeout(lbCreateOverlay,10) }}
+function lbPrev(){if(!CURRENT_PHOTOS)return; if(LBM.active){lbCommitOverlay()} if(CURRENT_INDEX>0){CURRENT_INDEX--;lbUpdate()}}
+function lbNext(){if(!CURRENT_PHOTOS)return; if(LBM.active){lbCommitOverlay()} if(CURRENT_INDEX<CURRENT_PHOTOS.length-1){CURRENT_INDEX++;lbUpdate()}}
+function lbDelete(){showConfirm('Dieses Bild wirklich löschen?',function(){if(!CURRENT_PHOTOS)return;CURRENT_PHOTOS.splice(CURRENT_INDEX,1);if(CURRENT_INDEX>=CURRENT_PHOTOS.length)CURRENT_INDEX=Math.max(0,CURRENT_PHOTOS.length-1);if(CURRENT_PHOTOS.length===0){lbClose()}lbUpdate();galleryRender()})}(function(){var ts=null;document.getElementById('lb').addEventListener('touchstart',function(e){ts=e.changedTouches[0].clientX},{passive:true});document.getElementById('lb').addEventListener('touchend',function(e){if(ts==null)return;var dx=e.changedTouches[0].clientX-ts;if(Math.abs(dx)>40){dx<0?lbNext():lbPrev()}ts=null},{passive:true});document.addEventListener('keydown',function(e){if(document.getElementById('lb').style.display!=='flex')return;if(e.key==='ArrowLeft')lbPrev();if(e.key==='ArrowRight')lbNext();if(e.key==='Escape')lbClose()});})();
+var NAV_LOCK=false,lockTimer=null;function setLock(ms){NAV_LOCK=true;clearTimeout(lockTimer);lockTimer=setTimeout(function(){NAV_LOCK=false},ms||500)}function guardClicks(id){var x=document.getElementById(id);if(!x)return;x.addEventListener('click',function(e){if(NAV_LOCK||(window.LBM&&LBM.active)){e.stopImmediatePropagation();e.preventDefault()}},true)}guardClicks('lbPrev');guardClicks('lbNext');var lb=document.getElementById('lb');if(lb){lb.addEventListener('touchstart',function(e){if(window.LBM&&LBM.active){e.stopImmediatePropagation()}},true);lb.addEventListener('touchend',function(e){if(window.LBM&&LBM.active){e.stopImmediatePropagation()}},true)}document.addEventListener('pointerup',function(e){var t=e.target;if(t&&t.id==='lbov'){setLock(500)}},true);
+
+/* Pull-to-refresh ausschalten & Busy-Overlay */
+document.addEventListener('pointerup',function(e){var t=e.target;if(t&&t.id==='lbov'){setLock(500)}},true);(function(){var lock=0,root=document.documentElement,body=document.body,start=0,hideTimer=null;window.showBusy=function(t){if(lock===0){start=Date.now()}lock++;var b=document.getElementById('busy');if(!b)return;if(t)document.getElementById('busyText').textContent=t;b.style.display='flex';root.style.overflow='hidden';body.style.overflow='hidden'};window.hideBusy=function(){lock=Math.max(0,lock-1);if(lock>0)return;var b=document.getElementById('busy');if(!b)return;var e=Date.now()-start,n=1000-e;if(n>0){clearTimeout(hideTimer);hideTimer=setTimeout(function(){b.style.display='none';root.style.overflow='';body.style.overflow=''},n)}else{b.style.display='none';root.style.overflow='';body.style.overflow=''}}})();(function(){let lastY=0;window.addEventListener('touchstart',e=>{if(e.touches.length!==1)return;lastY=e.touches[0].clientY;},{passive:true});window.addEventListener('touchmove',e=>{const y=e.touches[0].clientY,sy=window.scrollY||document.documentElement.scrollTop,top=sy===0,down=y>lastY+5;if(top&&down)e.preventDefault();lastY=y;},{passive:false});document.documentElement.style.overscrollBehavior='none';document.body.style.overscrollBehavior='none';})();
+
+/* Editor Bilder */
+var DRAW={c:null,ctx:null,img:null,stack:[],dpr:1,cw:0,ch:0};function openEditor(){if(!CURRENT_PHOTOS||CURRENT_PHOTOS.length===0)return;$('#eb').style.display='flex';var src=CURRENT_PHOTOS[CURRENT_INDEX],c=document.getElementById('cv'),x=c.getContext('2d'),img=new Image();img.onload=function(){var maxW=Math.min(Math.floor(window.innerWidth*0.92),980),scale=Math.min(maxW/img.width,0.7*window.innerHeight/img.height),cw=Math.floor(img.width*scale),ch=Math.floor(img.height*scale),dpr=window.devicePixelRatio||1;c.style.width=cw+'px';c.style.height=ch+'px';c.width=Math.round(cw*dpr);c.height=Math.round(ch*dpr);x.setTransform(1,0,0,1,0,0);x.scale(dpr,dpr);x.fillStyle='#fff';x.fillRect(0,0,cw,ch);x.drawImage(img,0,0,cw,ch);DRAW={c:c,ctx:x,img:img,stack:[],dpr:dpr,cw:cw,ch:ch};var drawing=false,lx=null,ly=null;function rel(e){var r=c.getBoundingClientRect();return{x:(e.clientX-r.left),y:(e.clientY-r.top)}}function pen(x0,y0){if(lx==null){lx=x0;ly=y0}x.lineWidth=5;x.lineCap='round';x.strokeStyle='#ef4444';x.beginPath();x.moveTo(lx,ly);x.lineTo(x0,y0);x.stroke();lx=x0;ly=y0}function push(){DRAW.stack.push(c.toDataURL())}c.onpointerdown=function(e){e.preventDefault();try{c.setPointerCapture(e.pointerId)}catch(_e){};drawing=true;lx=ly=null;push()};c.onpointerup=function(e){drawing=false;try{c.releasePointerCapture(e.pointerId)}catch(_e){}};c.onpointercancel=function(){drawing=false};c.onpointermove=function(e){if(!drawing)return;var p=rel(e);pen(p.x,p.y)}};img.src=src;}function eClear(){if(!DRAW.c)return;var x=DRAW.ctx,dpr=DRAW.dpr;x.setTransform(1,0,0,1,0,0);x.scale(dpr,dpr);x.clearRect(0,0,DRAW.cw,DRAW.ch);x.fillStyle='#fff';x.fillRect(0,0,DRAW.cw,DRAW.ch);x.drawImage(DRAW.img,0,0,DRAW.cw,DRAW.ch)}function eSave(){if(!DRAW.c||!CURRENT_PHOTOS)return;CURRENT_PHOTOS[CURRENT_INDEX]=DRAW.c.toDataURL('image/jpeg',0.9);document.getElementById('eb').style.display='none';lbUpdate();galleryRender()}
+
+/* Edit Modals Räume / Zähler / Rauchwarnmelder / Schlüssel */
+function editRoom(i){const isNew=(i==null);let r=(isNew||!RR[i]||typeof RR[i]!=='object')?{n:'',a:'',ok:null,rm:'',ph:[]}:RR[i];if(!Array.isArray(r.ph))r.ph=[];openModal(isNew?'Raum hinzufügen':'Raum bearbeiten',`<div class="kv"><div>Raum</div><div><input class="req" id="rn" value="${esc(r.n)}"><div class="reqlabel"></div></div></div><div class="kv" style="grid-template-columns:1fr"><div><label>Ausstattung</label><textarea id="ra" class="req">${esc(r.a||'')}</textarea></div></div><div class="kv"><div>Zustand</div><div><select class="req" id="rstat"><option value="">- nicht gesetzt -</option><option value="ok" ${r.ok===true?'selected':''}>In Ordnung</option><option value="nok" ${r.ok===false?'selected':''}>Nicht in Ordnung</option></select></div></div><div class="kv" style="grid-template-columns:1fr"><div><label>Bemerkung</label><textarea id="rrm">${esc(r.rm||'')}</textarea></div></div><div id="gallery"></div>`,function(){r.n=gvm('rn');r.a=gvm('ra');const st=gvm('rstat');r.ok=st==='ok'?true:st==='nok'?false:null;r.rm=gvm('rrm');if(Array.isArray(CURRENT_PHOTOS))r.ph=[...CURRENT_PHOTOS];if(isNew)RR.push(r);else RR[i]=r;renderRooms();save();return true});setTimeout(()=>{photosInit(r.ph)},0);}
+function editMeter(i){var isNew=(i==null),m=isNew?{t:'',nr:'',p:'',st:'',pv:'',bm:'',ph:[]}:(ZZ[i]);openModal((isNew?'Zähler hinzufügen':'Zähler bearbeiten'),'<div class="kv"><div>Zählerart</div><div><input class="req" id="mt" value="'+esc(m.t)+'"></div><div class="reqlabel"></div></div><div class="kv"><div>Zählernummer</div><div><input class="req" id="mnr" value="'+esc(m.nr)+'"></div><div class="reqlabel"></div></div><div class="kv"><div>Position</div><div><input class="req" id="mp" value="'+esc(m.p)+'"></div><div class="reqlabel"></div></div><div class="kv"><div>Stand aktuell</div><div><input class="req" id="ms" value="'+esc(m.st)+'" placeholder="z. B. 12345 A"></div><div class="reqlabel"></div></div><div class="kv"><div>Stand Vorjahr</div><div><input id="mpv" value="'+esc(m.pv)+'" placeholder="optional"></div></div><div class="kv" style="grid-template-columns:1fr"><div><label>Bemerkung</label><textarea id="mb">'+esc(m.bm||'')+'</textarea></div></div><div id="gallery"></div>',function(){m.t=gvm('mt');m.nr=gvm('mnr');m.p=gvm('mp');m.st=gvm('ms');m.pv=gvm('mpv');m.bm=gvm('mb');if(Array.isArray(CURRENT_PHOTOS))m.ph=[...CURRENT_PHOTOS];if(isNew){ZZ.push(m)}else{ZZ[i]=m}renderMeters();save();return true});photosInit(m.ph);setTimeout(()=>markModalRequired(document.querySelector('#mb'),'meter'),20);}
+function editSmoke(){if(!SS[0])SS[0]={n:'',st:'',bm:'',ph:[]};var s=SS[0];openModal('Rauchwarnmelder bearbeiten','<div class="kv"><div>Anzahl</div><div><input class="req" id="sn" value="'+esc(s.n)+'" type="number" min="0"></div></div><div class="kv"><div>Status</div><div><select class="req" id="sst"><option value="">- Auswahl -</option><option value="vollständig" '+(s.st==='vollständig'?'selected':'')+'>vollständig</option><option value="unvollständig" '+(s.st==='unvollständig'?'selected':'')+'>unvollständig</option><option value="Mängel" '+(s.st==='Mängel'?'selected':'')+'>Mängel</option></select></div></div><div class="kv" style="grid-template-columns:1fr"><div><label>Bemerkung</label><textarea id="sb">'+esc(s.bm||'')+'</textarea></div></div><div id="gallery"></div>',function(){s.n=gvm('sn');s.st=gvm('sst');s.bm=gvm('sb');if(Array.isArray(CURRENT_PHOTOS))s.ph=[...CURRENT_PHOTOS];SS[0]=s;renderSmokes();save();return true});photosInit(s.ph);}
+function editKey(i){var isNew=(i==null),k=isNew?{n:'',u:'',e:'',b:'',ph:[]}:(KK[i]);openModal((isNew?'Schlüssel hinzufügen':'Schlüssel bearbeiten'),'<div class="kv"><div>Schlüssel</div><div><input class="req" id="kn" value="'+esc(k.n)+'" placeholder="z. B. Haustür, Briefkasten"></div></div><div class="kv"><div>Übergeben (Soll)</div><div><input class="req" id="ku" value="'+esc(k.u)+'"></div></div><div class="kv"><div>Erhalten (Ist)</div><div><input class="req" id="ke" value="'+esc(k.e)+'"></div></div><div class="kv" style="grid-template-columns:1fr"><div><label>Bemerkung</label><textarea id="kb">'+esc(k.b||'')+'</textarea></div></div><div id="gallery"></div>',function(){k.n=gvm('kn');k.u=gvm('ku');k.e=gvm('ke');k.b=gvm('kb');if(Array.isArray(CURRENT_PHOTOS))k.ph=[...CURRENT_PHOTOS];if(isNew){KK.push(k)}else{KK[i]=k}renderKeys();save();return true});photosInit(k.ph);}
+
+/* Signatures - Syncronisation */
+function getAllSignRoles(){try{var list=[],ua=document.getElementById('ua')?document.getElementById('ua').value:'';var i1=document.getElementById('i1')?.value||'',i2=document.getElementById('i2')?.value||'';var o1=document.getElementById('o1')?.value||'',o2=document.getElementById('o2')?.value||'';if(ua!=='auszug'&&i1)list.push({r:'Einziehender Mieter',n:i1});if(ua!=='auszug'&&i2)list.push({r:'Einziehender Mieter',n:i2});if(ua!=='einzug'&&o1)list.push({r:'Ausziehender Mieter',n:o1});if(ua!=='einzug'&&o2)list.push({r:'Ausziehender Mieter',n:o2});if(Array.isArray(BI)&&ua!=='auszug')BI.forEach(n=>{if(n)list.push({r:'Einziehender Bewohner',n:n})});if(Array.isArray(BO)&&ua!=='einzug')BO.forEach(n=>{if(n)list.push({r:'Ausziehender Bewohner',n:n})});var sSel=document.getElementById('s');if(sSel&&sSel.value!==''){var idx=parseInt(sSel.value,10);if(typeof LS!=='undefined'&&Array.isArray(LS)&&LS[idx])list.push({r:'Hausverwaltung',n:LS[idx]});}return list;}catch(_e){return[];}}
+
+/* Signatures - Unterschriften */
+function renderSigns(){var c=document.getElementById('sig');if(!c)return;if(!Array.isArray(SG)||SG.length===0){c.innerHTML='<div class="mut">Noch keine Unterschriften.</div>';return;}c.innerHTML=SG.map((s,i)=>'<div class="item"><div class="item-head"><div class="left"><strong>'+esc(s.r||'Unbekannt')+'</strong><div class="mut">'+esc(s.n||'-')+(s.d?' ('+esc(s.d)+')':'')+'</div></div><div class="row"><button class="btn ghost" onclick="viewSign('+i+')">Ansehen</button><button class="btn dang" onclick="delSign('+i+')">Löschen</button></div></div></div>').join('');}
+function viewSign(i){if(!Array.isArray(SG)||!SG[i]){openModal('Unterschrift ansehen','<div class="mut">Keine Unterschrift gefunden.</div>',function(){});return;}var s=SG[i];if(!s.img){openModal('Unterschrift ansehen','<div class="mut">Für diese Person liegt noch keine Unterschrift vor.</div>',function(){});return;}openModal('Unterschrift ansehen','<img src="'+esc(s.img)+'" style="max-width:100%;border:2px solid #000;border-radius:8px;background:#000">',function(){});setTimeout(()=>{const cancelBtn=document.getElementById('mCancel'),saveBtn=document.getElementById('mSaveBtn');if(cancelBtn){cancelBtn.style.display='inline-block';cancelBtn.textContent='Zurück';}if(saveBtn){saveBtn.style.display='none';}},50);}
+function addSign(){function showSpinner(){let o=document.getElementById('pdfBusy');if(!o){o=document.createElement('div');o.id='pdfBusy';o.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:99999';o.innerHTML='<div style="width:72px;height:72px;border-radius:50%;border:8px solid #fff;border-top-color:transparent;animation:sp 1s linear infinite"></div><style>@keyframes sp{to{transform:rotate(1turn)}}</style>';document.body.appendChild(o);}else o.style.display='flex';}function hideSpinner(){const o=document.getElementById('pdfBusy');if(o)o.style.display='none';}var a=$('#ua').value,all=[],i1=gv('i1'),i2=gv('i2'),o1=gv('o1'),o2=gv('o2');if(a!=='auszug'&&i1)all.push({r:'Einziehender Mieter',n:i1});if(a!=='auszug'&&i2)all.push({r:'Einziehender Mieter',n:i2});if(a!=='einzug'&&o1)all.push({r:'Ausziehender Mieter',n:o1});if(a!=='einzug'&&o2)all.push({r:'Ausziehender Mieter',n:o2});if(a!=='auszug'&&Array.isArray(BI))BI.forEach(n=>n&&all.push({r:'Einziehender Bewohner',n:n}));if(a!=='einzug'&&Array.isArray(BO))BO.forEach(n=>n&&all.push({r:'Ausziehender Bewohner',n:n}));var sIdx=$('#s').value;if(sIdx!==''){var ix=parseInt(sIdx,10);if(Array.isArray(LS)&&LS[ix])all.push({r:'Hausverwaltung',n:LS[ix]});}var signedSet=new Set(SG.map(s=>s.r+'|'+s.n)),pending=all.filter(p=>!signedSet.has(p.r+'|'+p.n)),signed=all.filter(p=>signedSet.has(p.r+'|'+p.n));if(pending.length===0){openModal('Unterschrift erfassen','<div class="mut">Alle hinterlegten Personen haben bereits unterschrieben.</div>',function(){});return;}var dflt=gv('de')||gv('da')||gv('dp')||'',html='<div class="kv"><div>Person</div><div><select id="sp"><option value="">- Auswahl -</option>'+pending.map((o,i)=>'<option value="'+i+'">'+esc(o.r)+' – '+esc(o.n)+'</option>').join('')+'</select></div></div><div class="kv"><div>Datum</div><div><input id="sd" type="date" value="'+dflt+'"></div></div><div class="kv" style="grid-template-columns:1fr"><div><canvas id="sgcv"></canvas><div id="sigbars_modal" class="sigbar" style="margin-top:12px"></div></div></div>';openModal('Unterschrift erfassen',html,function(){var v=gvm('sp');if(v===''){showAlert('Bitte Person wählen.');return false;}showSpinner();var p=pending[parseInt(v,10)];var ctx=SIG.x;ctx.save();var jetzt=new Date();var datum=jetzt.toLocaleDateString("de-DE");var zeit=jetzt.toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"});var wm=((datum+" | "+zeit+" | ").repeat(800)).slice(0,20000);ctx.translate(-SIG.cw*0.25,SIG.ch*0.1);ctx.rotate(-Math.PI/4);ctx.font="17px Calibri";ctx.fillStyle="rgba(100,116,139,0.3)";for(let y=-SIG.ch*3;y<SIG.ch*5;y+=18){ctx.fillText(wm,-SIG.cw*3,y);}ctx.restore();var img=SIG.c.toDataURL('image/png');var blank=document.createElement('canvas');blank.width=SIG.c.width;blank.height=SIG.c.height;var blankData=blank.toDataURL();if(img===blankData){hideSpinner();showAlert('Bitte unterschreiben, bevor gespeichert wird.');return false;}SG.push({r:p.r,n:p.n,d:gvm('sd')||gv('dp')||'',img:img});renderSigns();if(typeof renderSigBars==='function')renderSigBars();if(typeof renderSigBarsModal==='function')renderSigBarsModal();save();setTimeout(function(){hideSpinner();closeModal();},1500);return false;});setTimeout(()=>{setupSig();if(typeof renderSigBarsModal==='function')renderSigBarsModal();},50);var cbtn=document.getElementById('mCancel');if(cbtn)cbtn.style.display='none';}
+function setupSig(){var c=document.getElementById('sgcv');if(!c)return;Object.assign(c.style,{display:'block',width:'100%',margin:'0',border:'1px solid #4b5563',borderRadius:'10px',background:'#f3f4f6'});var x=c.getContext('2d',{willReadFrequently:true,alpha:true});x.imageSmoothingEnabled=true;x.imageSmoothingQuality='high';var W=c.clientWidth,H=275,dpr=(window.devicePixelRatio||1)*2;c.width=W*dpr;c.height=H*dpr;x.setTransform(dpr,0,0,dpr,0,0);x.fillStyle='#f3f4f6';x.fillRect(0,0,W,H);x.strokeStyle='#000';x.lineWidth=3;x.lineCap='round';x.lineJoin='round';SIG={c:c,x:x,dpr:dpr,cw:W,ch:H,stack:[]};let drawing=false,last=null;function rel(e){const r=c.getBoundingClientRect();return{x:(e.clientX-r.left),y:(e.clientY-r.top)}}c.onpointerdown=e=>{e.preventDefault();drawing=true;last=rel(e);x.beginPath();x.moveTo(last.x,last.y);};c.onpointermove=e=>{if(!drawing)return;let p=rel(e);x.quadraticCurveTo(last.x,last.y,(last.x+p.x)/2,(last.y+p.y)/2);x.stroke();last=p;};['pointerup','pointerleave','pointercancel'].forEach(ev=>c.addEventListener(ev,()=>{drawing=false;last=null;}));var fl=document.querySelector('#mb .ftr .leftg');if(fl){fl.querySelectorAll('.sig-ctl').forEach(n=>n.remove());var btn2=document.createElement('button');btn2.className='btn warn sig-ctl';btn2.textContent='Leeren';btn2.onclick=function(){x.setTransform(dpr,0,0,dpr,0,0);x.clearRect(0,0,W,H);x.fillStyle='#f3f4f6';x.fillRect(0,0,W,H);last=null;};fl.insertBefore(btn2,fl.firstChild);var btnBack=document.createElement('button');btnBack.className='btn ghost sig-ctl';btnBack.textContent='Zurück';btnBack.onclick=function(){closeModal()};fl.insertBefore(btnBack,btn2.nextSibling);}}
+function delSign(i){if(!Array.isArray(SG)||!SG[i])return;showConfirm('Diese Unterschrift wirklich löschen?',function(){SG.splice(i,1);renderSigns();if(typeof renderSigBars==='function')renderSigBars();if(typeof renderSigBarsModal==='function')renderSigBarsModal();save();});}
+function clearSigns(){showConfirm('Alle Unterschriften löschen?',function(){SG=[];renderSigns();if(typeof renderSigBars==='function')renderSigBars();if(typeof renderSigBarsModal==='function')renderSigBarsModal();save();});}
+
+/* Signaturleiste im Modal */
+(function(){
+function _esc(s){s=(s==null?'':String(s));return s.replace(/[&<>]/g,function(m){return({'&':'&amp;','<':'&lt;','>':'&gt;'})[m];});}
+function _buildSigPeople(){try{var list=[],ua=document.getElementById('ua')?document.getElementById('ua').value:'';var i1=document.getElementById('i1')?.value||'',i2=document.getElementById('i2')?.value||'';var o1=document.getElementById('o1')?.value||'',o2=document.getElementById('o2')?.value||'';if(ua!=='auszug'&&i1)list.push({r:'Einziehender Mieter',n:i1});if(ua!=='auszug'&&i2)list.push({r:'Einziehender Mieter',n:i2});if(ua!=='einzug'&&o1)list.push({r:'Ausziehender Mieter',n:o1});if(ua!=='einzug'&&o2)list.push({r:'Ausziehender Mieter',n:o2});if(typeof BI!=='undefined'&&ua!=='auszug'){(BI||[]).forEach(function(n){if(n)list.push({r:'Einziehender Bewohner',n:n});});}if(typeof BO!=='undefined'&&ua!=='einzug'){(BO||[]).forEach(function(n){if(n)list.push({r:'Ausziehender Bewohner',n:n});});}var sSel=document.getElementById('s');if(sSel&&sSel.value!==''){var idx=parseInt(sSel.value,10);if(typeof LS!=='undefined'&&Array.isArray(LS)&&LS[idx])list.push({r:'Hausverwaltung',n:LS[idx]});}return list;}catch(_e){return[];}}
+function _splitSigState(){var all=_buildSigPeople();var sg=(typeof SG!=='undefined'&&Array.isArray(SG))?SG:[];var signedSet=new Set(sg.map(function(s){return s.r+'|'+s.n}));return{pending:all.filter(function(p){return!signedSet.has(p.r+'|'+p.n)}),signed:all.filter(function(p){return signedSet.has(p.r+'|'+p.n)})};}
+function renderSigBarsModal(){var host=document.getElementById('sigbars_modal');if(!host)return;var pills=getAllSignRoles();if(Array.isArray(SG))SG.forEach(s=>{var p=pills.find(p=>p.r===s.r&&p.n===s.n);if(p)p.done=!!(s.d||s.img||s.data)});host.innerHTML=pills.length?pills.map(p=>'<span class="sigpill '+(p.done?'ok':'pending')+'"><span class="dot"></span>'+esc(p.r)+' – '+esc(p.n||p.r)+'</span>').join(''):'<span class="mut">Noch keine zu erfassenden Unterschriften.</span>';}
+document.addEventListener('DOMContentLoaded',function(){try{var modal=document.getElementById('signModal')||document.querySelector('[id*=sign][class*=modal]');if(modal&&'MutationObserver'in window){var o=new MutationObserver(function(muts){muts.forEach(function(m){if(m.attributeName==='class'){var on=modal.classList.contains('on')||modal.style.display==='block';if(on){renderSigBarsModal();}}});});o.observe(modal,{attributes:true,attributeFilter:['class']});}var sig=document.getElementById('sig');if(sig&&'MutationObserver'in window){var ob=new MutationObserver(function(){renderSigBarsModal();});ob.observe(sig,{childList:true,subtree:true});}['ua','i1','i2','o1','o2','s'].forEach(function(id){var el=document.getElementById(id);if(!el)return;el.addEventListener('change',renderSigBarsModal,{passive:true});el.addEventListener('input',renderSigBarsModal,{passive:true});});}catch(_e){}});
+window.renderSigBarsModal=renderSigBarsModal;})();
+
+/* Signatur-Leisten-Logik */
+(function(){
+function esc(s){s=(s==null?'':String(s));return s.replace(/[&<>]/g,function(m){return({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]});}
+function buildSigPeople(){try{var list=[],ua=document.getElementById('ua')?document.getElementById('ua').value:'';var i1=document.getElementById('i1')?.value||'',i2=document.getElementById('i2')?.value||'';var o1=document.getElementById('o1')?.value||'',o2=document.getElementById('o2')?.value||'';if(ua!=='auszug'&&i1)list.push({r:'Einziehender Mieter',n:i1});if(ua!=='auszug'&&i2)list.push({r:'Einziehender Mieter',n:i2});if(ua!=='einzug'&&o1)list.push({r:'Ausziehender Mieter',n:o1});if(ua!=='einzug'&&o2)list.push({r:'Ausziehender Mieter',n:o2});if(typeof BI!=='undefined'&&ua!=='auszug'){(BI||[]).forEach(function(n){list.push({r:'Einziehender Bewohner',n:n})});}if(typeof BO!=='undefined'&&ua!=='einzug'){(BO||[]).forEach(function(n){list.push({r:'Ausziehender Bewohner',n:n})});}var sSel=document.getElementById('s');if(sSel&&sSel.value!==''){var idx=parseInt(sSel.value,10);if(typeof LS!=='undefined'&&LS[idx])list.push({r:'Hausverwaltung',n:LS[idx]});}return list;}catch(_e){return[];}}
+function splitSigState(){var all=buildSigPeople();var sg=(typeof SG!=='undefined'&&Array.isArray(SG))?SG:[];var signedSet=new Set(sg.map(function(s){return s.r+'|'+s.n}));return{pending:all.filter(function(p){return!signedSet.has(p.r+'|'+p.n)}),signed:all.filter(function(p){return signedSet.has(p.r+'|'+p.n)})};}
+function renderSigBars(){var wrap=document.getElementById('sigbars');if(!wrap)return;var pills=getAllSignRoles();if(Array.isArray(SG))SG.forEach(s=>{var p=pills.find(p=>p.r===s.r&&p.n===s.n);if(p)p.done=!!(s.d||s.img||s.data)});wrap.innerHTML=pills.length?pills.map(p=>'<span class="sigpill '+(p.done?'ok':'pending')+'"><span class="dot"></span>'+esc(p.r)+' – '+esc(p.n||p.r)+'</span>').join(''):'<span class="mut">Noch keine zu erfassenden Unterschriften.</span>';}
+document.addEventListener('DOMContentLoaded',function(){try{renderSigBars();var sig=document.getElementById('sig');if(sig&&'MutationObserver'in window){var ob=new MutationObserver(function(){renderSigBars();});ob.observe(sig,{childList:true,subtree:true});}['ua','i1','i2','o1','o2','s'].forEach(function(id){var el=document.getElementById(id);if(!el)return;el.addEventListener('change',renderSigBars,{passive:true});el.addEventListener('input',renderSigBars,{passive:true});});}catch(_e){}});
+window.renderSigBars=renderSigBars;})();
+
+/* Stammdaten verwalten */
+function manageData(){openModal('Stammdaten verwalten','<div class=\"item\"><div class=\"item-head\"><div class=\"left\"><strong>Vermieter</strong></div></div><div id=\"mv\"></div><div class=\"row\"><input id=\"nvn\" placeholder=\"Name\"><input id=\"nva\" placeholder=\"Adresse\"><input id=\"nvm\" placeholder=\"E-Mail\"><input id=\"nvt\" placeholder=\"Telefon\"><button class=\"btn sm\" onclick=\"sdAdd(0)\">Hinzufügen</button></div></div><div class=\"item\"><div class=\"item-head\"><div class=\"left\"><strong>Liegenschaft</strong></div></div><div id=\"mh\"></div><div class=\"row\"><input id=\"nh\" placeholder=\"Neue Liegenschaft\"><button class=\"btn sm\" onclick=\"sdAdd(1)\">Hinzufügen</button></div></div><div class=\"item\"><div class=\"item-head\"><div class=\"left\"><strong>Sachbearbeiter (Hausverwaltung)</strong></div></div><div id=\"msl\"></div><div class=\"row\"><input id=\"ns\" placeholder=\"Neuer Sachbearbeiter\"><button class=\"btn sm\" onclick=\"sdAdd(2)\">Hinzufügen</button></div></div>',function(){qOpt($('#v'),LV,function(x){return x.n});qOpt($('#h'),LH);qOpt($('#s'),LS);setVal('v',SEL.v);setVal('h',SEL.h);setVal('s',SEL.s);save()});paintSD()}
+function paintSD(){var mv=$('#mv'),mh=$('#mh'),ms=$('#msl');mv.innerHTML=(LV.map(function(x,i){return '<div class=\"item\"><div class=\"item-head\"><div class=\"left\">'+esc(x.n)+'<div class=\"mut\">'+esc([x.adr,x.mail,x.tel].filter(Boolean).join(' • '))+'</div></div><div class=\"row\"><button class=\"btn sm ghost\" onclick=\"sdEdit(0,'+i+')\">Bearbeiten</button><button class=\"btn sm dang\" onclick=\"sdDel(0,'+i+')\">Löschen</button></div></div></div>'}).join('')||'<div class=\"mut\">Keine Einträge</div>');mh.innerHTML=(LH.map(function(x,i){return '<div class=\"item\"><div class=\"item-head\"><div class=\"left\">'+esc(x)+'</div><div class=\"row\"><button class=\"btn sm ghost\" onclick=\"sdEdit(1,'+i+')\">Bearbeiten</button><button class=\"btn sm dang\" onclick=\"sdDel(1,'+i+')\">Löschen</button></div></div></div>'}).join('')||'<div class=\"mut\">Keine Einträge</div>');ms.innerHTML=(LS.map(function(x,i){return '<div class=\"item\"><div class=\"item-head\"><div class=\"left\">'+esc(x)+'</div><div class=\"row\"><button class=\"btn sm ghost\" onclick=\"sdEdit(2,'+i+')\">Bearbeiten</button><button class=\"btn sm dang\" onclick=\"sdDel(2,'+i+')\">Löschen</button></div></div></div>'}).join('')||'<div class=\"mut\">Keine Einträge</div>')}
+function sdAdd(t){if(t===0){var n=gvm('nvn');if(!n)return;LV.push({n:n,adr:gvm('nva'),mail:gvm('nvm'),tel:gvm('nvt')});['nvn','nva','nvm','nvt'].forEach(function(id){var e=document.getElementById(id);if(e)e.value=''})}else if(t===1){var h=gvm('nh');if(!h)return;LH.push(h);var e=document.getElementById('nh');if(e)e.value=''}else{var s=gvm('ns');if(!s)return;LS.push(s);var e2=document.getElementById('ns');if(e2)e2.value=''}paintSD();save();}
+function sdEdit(t,i){if(t===0){var x=LV[i];var n=prompt('Name',x.n);if(n==null)return;var a=prompt('Adresse',x.adr||'');if(a==null)return;var m=prompt('E-Mail',x.mail||'');if(m==null)return;var tl=prompt('Telefon',x.tel||'');if(tl==null)return;LV[i]={n:n.trim(),adr:a.trim(),mail:m.trim(),tel:tl.trim()}}else if(t===1){var nv=prompt('Liegenschaft',LH[i]);if(nv==null)return;LH[i]=nv.trim()}else{var ns=prompt('Sachbearbeiter',LS[i]);if(ns==null)return;LS[i]=ns.trim()}paintSD();save();}
+function sdDel(t,i){showConfirm('Eintrag wirklich löschen?',function(){(t===0?LV:(t===1?LH:LS)).splice(i,1);paintSD();save()})}
+
+/* Verarbeitung */
+function buildExportName(){var ua=gv('ua');var nr='', dt=''; if(ua!=='auszug'&&gv('inr')){nr=gv('inr')} else if(ua!=='einzug'&&gv('on')){nr=gv('on')} else {nr=gv('inr')||gv('on')||'ohneNr'} if(ua!=='einzug'&&gv('da')){dt=gv('da')} else if(ua!=='auszug'&&gv('de')){dt=gv('de')} else {dt=gv('dp')||'ohneDatum'} return 'ÜGP '+nr+' '+dt+'.json'}
+function exportData(){var name=buildExportName(); var data={LV:LV,LH:LH,LS:LS,BI:BI,BO:BO,RR:RR,ZZ:ZZ,SS:SS,KK:KK,/* SG absichtlich nicht */ v:$('#v').value,h:$('#h').value,s:$('#s').value,dp:$('#dp').value,ua:$('#ua').value,wp:$('#wp').value,wa:$('#wa').value,da:$('#da').value,de:$('#de').value,o1:$('#o1').value,o2:$('#o2').value,on:$('#on').value,oa:$('#oa').value,i1:$('#i1').value,i2:$('#i2').value,inr:$('#inr').value,np:$('#np').value,ni:$('#ni').value,exportedAt:new Date().toISOString()}; try{var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},0);/* Nach Speichern: Unterschriften löschen */ SG=[];renderSigns();toast('Gespeichert als: '+name)}catch(e){toast('Export fehlgeschlagen: '+e.message,true)}}
+function protoStub(){showAlert('„Protokoll erstellen“ wird später ergänzt.');}
+
+/* App */
+function clearAll(){showConfirm('Sind Sie sicher, dass Sie alle gespeicherten Daten löschen möchten?',function(){localStorage.removeItem(KEY);location.reload()})}
+function setVal(id,val){var el=document.getElementById(id);if(el!=null&&val!=null)el.value=val}
+function init(){qOpt($('#v'),LV,function(x){return x.n});qOpt($('#h'),LH);qOpt($('#s'),LS);setVal('v',SEL.v);setVal('h',SEL.h);setVal('s',SEL.s);renderRooms();renderMeters();renderSmokes();renderKeys();renderSigns();renderBew();applyMode();if(typeof autoValidateMainForm==="function")autoValidateMainForm();['v','h','s','dp','ua','wp','wa','da','de','o1','o2','on','oa','i1','i2','inr','np','ni'].forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener('input',save)});restoreTheme();}
+
+/* Theme */
+if(typeof autoValidateMainForm==="function")autoValidateMainForm();
+function restoreTheme(){var t=localStorage.getItem('theme')||'light';document.documentElement.setAttribute('data-theme',t);var b=document.getElementById('themeTgl');if(!b)return;var use= b.querySelector('use');var txt=b.querySelector('span');if(t==='dark'){use.setAttribute('href','#i-sun');txt.textContent='Light'}else{use.setAttribute('href','#i-moon');txt.textContent='Dark'}}
+function toggleTheme(){var cur=document.documentElement.getAttribute('data-theme')||'light';var nxt=(cur==='dark'?'light':'dark');document.documentElement.setAttribute('data-theme',nxt);localStorage.setItem('theme',nxt);restoreTheme()}
+
+/* Export HTML-Datei */
+(function(){
+function fnSanitize(s){s=(s||'').trim();return s.replace(/[\/:*?"<>|]+/g,' ').replace(/\s+/g,' ').trim();}
+function fileNameFromState(){try{var ua=(document.getElementById('ua')||{}).value||'einzug';var nr=ua==='einzug'?(document.getElementById('inr')||{}).value:ua==='auszug'?(document.getElementById('on')||{}).value:((document.getElementById('on')||{}).value||(document.getElementById('inr')||{}).value);nr=nr||'000';var n1=ua==='einzug'?(document.getElementById('i1')||{}).value:ua==='auszug'?(document.getElementById('o1')||{}).value:((document.getElementById('o1')||{}).value||'')+' '+((document.getElementById('i1')||{}).value||'');n1=n1||'Mustermann';var dt=ua==='einzug'?(document.getElementById('de')||{}).value:ua==='auszug'?(document.getElementById('da')||{}).value:((document.getElementById('da')||{}).value||(document.getElementById('de')||{}).value);if(!dt){var d=new Date();dt=d.toISOString().slice(0,10);}return('ÜGP '+fnSanitize(nr)+' '+fnSanitize(n1)+' '+fnSanitize(dt)+'.html').trim();}catch(e){return'protokoll.html';}}
+function slimList(arr){try{return(arr||[]).map(function(x){var y={};for(var k in x){if(Object.prototype.hasOwnProperty.call(x,k)){y[k]=x[k];}}if('ph'in y)y.ph=[];return y;});}catch(e){return[];}}
+window.exportHTML=function(){try{var data={LV:(typeof LV!=='undefined'?LV:[]),LH:(typeof LH!=='undefined'?LH:[]),LS:(typeof LS!=='undefined'?LS:[]),BI:(typeof BI!=='undefined'?BI:[]),BO:(typeof BO!=='undefined'?BO:[]),RR:(typeof RR!=='undefined'?slimList(RR):[]),ZZ:(typeof ZZ!=='undefined'?slimList(ZZ):[]),SS:(typeof SS!=='undefined'?slimList(SS):[]),KK:(typeof KK!=='undefined'?slimList(KK):[]),v:(document.getElementById('v')||{}).value||'',h:(document.getElementById('h')||{}).value||'',s:(document.getElementById('s')||{}).value||'',dp:(document.getElementById('dp')||{}).value||'',ua:(document.getElementById('ua')||{}).value||'einzug',wp:(document.getElementById('wp')||{}).value||'',wa:(document.getElementById('wa')||{}).value||'',da:(document.getElementById('da')||{}).value||'',de:(document.getElementById('de')||{}).value||'',o1:(document.getElementById('o1')||{}).value||'',o2:(document.getElementById('o2')||{}).value||'',on:(document.getElementById('on')||{}).value||'',oa:(document.getElementById('oa')||{}).value||'',i1:(document.getElementById('i1')||{}).value||'',i2:(document.getElementById('i2')||{}).value||'',inr:(document.getElementById('inr')||{}).value||'',np:(document.getElementById('np')||{}).value||'',ni:(document.getElementById('ni')||{}).value||''};var tag=document.getElementById('savedData');if(tag){var json=JSON.stringify(data).replace(/<\/(script)/ig,'<\\/\\$1');tag.textContent=json;}try{if(window.SG){window.SG=[];}if(typeof window.renderSigns==='function'){window.renderSigns();}}catch(_e){}var html='<!DOCTYPE html>'+document.documentElement.outerHTML;var blob=new Blob([html],{type:'text/html'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fileNameFromState();document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},0);try{if(window.toast)toast('HTML gespeichert');}catch(_e){}}catch(e){alert('Export fehlgeschlagen: '+e.message);}}})();
+
+/* Scroll-Block für Unterschrift */
+document.addEventListener('touchmove',e=>{if(e.target.closest('#sig')||e.target.closest('canvas'))e.preventDefault();},{passive:false});
+
+/* Live-Validierung Hauptformular (inkl. Auto-Check beim Laden) */
+document.addEventListener("DOMContentLoaded",()=>{const mainFields=["v","dp","h","s","ua","wp","wa","da","o1","on","oe","oa","de","i1","inr","ie"];function isFieldRequired(id){const mode=document.getElementById("ua")?.value||"";const auszug=["da","o1","on","oe","oa"];const einzug=["de","i1","inr","ie"];if(["v","dp","h","s","ua","wp","wa"].includes(id))return true;if(mode==="auszug"&&auszug.includes(id))return true;if(mode==="einzug"&&einzug.includes(id))return true;if(mode==="wechsel"&&(auszug.includes(id)||einzug.includes(id)))return true;return false;}function validateField(el){if(!el)return;const val=(el.value||"").trim();const required=isFieldRequired(el.id);el.classList.toggle("invalid",required&&val==="");}function validateAllMainFields(){mainFields.forEach(id=>validateField(document.getElementById(id)));}mainFields.forEach(id=>{const el=document.getElementById(id);if(!el)return;["input","change","blur"].forEach(evt=>{el.addEventListener(evt,()=>validateField(el),{passive:true});});});const modeEl=document.getElementById("ua");if(modeEl){modeEl.addEventListener("change",()=>validateAllMainFields());}validateAllMainFields();window.autoValidateMainForm=validateAllMainFields;});
+
+</script>
+
+
+<!-- === Erstellung Funktion Protokoll Vorschau u. PDF Export (V75 – mit Mailversand + Fallback) === -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+(function(){
+  const css=`#previewModal{display:none;position:fixed;inset:0;background:#000;z-index:9000;justify-content:center;align-items:flex-start}
+  #previewWrapper{display:flex;flex-direction:column;align-items:center;width:100%;height:100%;padding:4vh 0 8vh}
+  #previewScrollArea{background:#fff;border:2px solid #111;border-radius:14px;box-shadow:0 0 80px rgba(255,255,255,.25);width:92vw;max-width:1800px;min-width:600px;overflow-y:auto;max-height:80vh;padding:40px;transition:.3s all ease-in-out}
+  #previewButtons{margin:30px 0 20px;display:flex;justify-content:center;gap:24px;flex-wrap:wrap}
+  #previewButtons button{padding:14px 28px;font-size:16px;font-weight:600;border:none;border-radius:8px;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.25);transition:.2s background,.1s transform}
+  #previewButtons button:active{transform:scale(.97)}
+  #btnClosePreview{background:#f59e0b;color:#fff;min-width:180px}
+  #btnApprovePreview{background:#10b981;color:#fff;min-width:160px}
+  #btnApproveAndMail{background:#0f6fff;color:#fff;min-width:230px}`;
+  
+  if(!document.getElementById('previewStyles'))
+    document.head.insertAdjacentHTML('beforeend',`<style id="previewStyles">${css}</style>`);
+  
+  if(!document.getElementById('previewModal'))
+    document.body.insertAdjacentHTML('beforeend',`
+      <div id="previewModal">
+        <div id="previewWrapper">
+          <div id="previewScrollArea"><div id="previewContainer"></div></div>
+          <div id="previewButtons">
+            <button id="btnApprovePreview">Freigabe</button>
+            <button id="btnApproveAndMail">📧 Freigabe & Mailversand</button>
+            <button id="btnClosePreview">Zurück</button>
+          </div>
+        </div>
+      </div>`);
+
+  // Spinner
+  function showSpinner(){
+    let o=document.getElementById('pdfBusy');
+    if(!o){
+      o=document.createElement('div');
+      o.id='pdfBusy';
+      o.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:99999';
+      o.innerHTML='<div style="width:72px;height:72px;border-radius:50%;border:8px solid #fff;border-top-color:transparent;animation:sp 1s linear infinite"></div><style>@keyframes sp{to{transform:rotate(1turn)}}</style>';
+      document.body.appendChild(o);
+    } else o.style.display='flex';
+  }
+  function hideSpinner(){
+    const o=document.getElementById('pdfBusy');
+    if(o)o.style.display='none';
+  }
+
+  // === E-Mail-Versand mit Fallback (kompatibel für alle Browser) ===
+  async function sendProtocolEmail(pdfBlob) {
+    try {
+      const gv = id => {
+        const el = document.getElementById(id);
+        return el ? el.value.trim() : "";
+      };
+      const emails = [gv("ie"), gv("oe")].filter(x => x && x.includes("@"));
+      if (emails.length === 0) {
+        alert("❌ Keine gültige E-Mail-Adresse gefunden.");
+        return;
+      }
+
+      const datum = gv("dp") || new Date().toLocaleDateString("de-DE");
+      const mnr = [gv("inr"), gv("on")].filter(Boolean).join(", ");
+      const subject = `Übergabeprotokoll ${datum} / Mieternr: ${mnr || "-"}`;
+      const body = encodeURIComponent(`Sehr geehrte Damen und Herren,
+
+im Anhang finden Sie das Übergabeprotokoll vom ${datum}.
+
+Mit freundlichen Grüßen,
+Ihre Hausverwaltung`);
+
+      const fileName = `Übergabeprotokoll_${mnr || "ohneNr"}.pdf`;
+
+      // 🧠 Prüfen, ob File System Access API verfügbar ist
+      if (window.showSaveFilePicker) {
+        const pdfFile = new File([pdfBlob], fileName, { type: "application/pdf" });
+        const handle = await window.showSaveFilePicker({
+          suggestedName: pdfFile.name,
+          types: [{ description: "PDF-Datei", accept: { "application/pdf": [".pdf"] } }],
+        });
+        const writable = await handle.createWritable();
+        await writable.write(pdfFile);
+        await writable.close();
+      } else {
+        // 🧩 Fallback: PDF direkt herunterladen
+        const blobUrl = URL.createObjectURL(pdfBlob);
+        const a = document.createElement("a");
+        a.href = blobUrl;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(blobUrl);
+      }
+
+      // ✉️ Mail-Programm öffnen
+      const mailto = `mailto:${emails.join(",")}?subject=${encodeURIComponent(subject)}&body=${body}`;
+      window.location.href = mailto;
+
+    } catch (e) {
+      alert("❌ Fehler beim Mailversand: " + e.message);
+    }
+  }
+
+  // === Vorschau- und PDF-Logik ===
+  window.showProtocolPreview = async (html, meta = {}) => {
+    const { datum = new Date().toLocaleDateString("de-DE"), zeit = new Date().toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }), mnr = "–" } = meta;
+    const m = document.getElementById('previewModal'),
+          c = document.getElementById('previewContainer');
+    c.innerHTML = html;
+    m.style.display = 'flex';
+    m.style.opacity = '0';
+    m.style.transition = 'opacity .4s ease';
+    requestAnimationFrame(() => m.style.opacity = '1');
+    document.body.style.overflow = 'hidden';
+    c.querySelectorAll('button,input,textarea,select').forEach(e => {
+      e.disabled = true; e.style.pointerEvents = 'none'; e.style.opacity = '.85';
+    });
+
+    const btnC = document.getElementById('btnClosePreview'),
+          btnA = document.getElementById('btnApprovePreview'),
+          btnM = document.getElementById('btnApproveAndMail');
+
+    // === Schließen ===
+    btnC.onclick = () => {
+      m.style.opacity = '0';
+      setTimeout(() => {
+        m.style.display = 'none'; c.innerHTML = ''; document.body.style.overflow = '';
+      }, 300);
+    };
+
+    // === Freigabe (PDF speichern) ===
+    btnA.onclick = async () => {
+      try {
+        btnA.disabled = true; btnA.textContent = 'Freigabe...';
+        showSpinner();
+        await new Promise(r => setTimeout(r, 800));
+        const gv = id => { const el = document.getElementById(id); return el ? el.value.trim() : "" };
+        const mnrFile = [gv("inr"), gv("on")].filter(Boolean).join(" / ") || "Unbekannt";
+        const datumFile = gv("dp") ? gv("dp").split("-").reverse().join(".") : new Date().toLocaleDateString("de-DE");
+        const fileName = `ÜGP ${mnrFile} - ${datumFile}.pdf`;
+        const opt = { margin: [10, 10, 15, 10], filename: fileName, image: { type: "jpeg", quality: 0.98 }, html2canvas: { scale: 2, useCORS: true, scrollY: 0 }, jsPDF: { unit: "mm", format: "a4", orientation: "portrait" } };
+        await html2pdf().from(c).set(opt).save();
+      } catch (e) {
+        alert('❌ Fehler: ' + e.message);
+      } finally {
+        hideSpinner();
+        btnA.textContent = 'Freigabe'; btnA.disabled = false;
+        m.style.opacity = '0'; setTimeout(() => { m.style.display = 'none'; c.innerHTML = ''; document.body.style.overflow = ''; }, 400);
+      }
+    };
+
+    // === Freigabe + Mailversand ===
+    btnM.onclick = async () => {
+      try {
+        btnM.disabled = true; btnM.textContent = 'Erstelle & sende...';
+        showSpinner();
+        const opt = { margin: [10, 10, 15, 10], image: { type: "jpeg", quality: 0.98 }, html2canvas: { scale: 2, useCORS: true, scrollY: 0 }, jsPDF: { unit: "mm", format: "a4", orientation: "portrait" } };
+        const pdfBlob = await html2pdf().from(c).set(opt).toPdf().output("blob");
+        await sendProtocolEmail(pdfBlob);
+      } catch (e) {
+        alert("❌ Fehler: " + e.message);
+      } finally {
+        hideSpinner();
+        btnM.textContent = '📧 Freigabe & Mailversand'; btnM.disabled = false;
+        m.style.opacity = '0'; setTimeout(() => { m.style.display = 'none'; c.innerHTML = ''; document.body.style.overflow = ''; }, 400);
+      }
+    };
+  };
+})();
+</script>
+
+
+
+
+
+
+
+
+
+
+
+<!-- === Erstellung Protokoll layout und Rendering === -->
+<script>
+function exportPreview(){
+const esc=s=>String(s??"").replace(/[&<>]/g,m=>({"&":"&amp;","<":"&lt;","&gt;":"&gt;"}[m]));
+const gv=id=>{const el=document.getElementById(id);return el?String(el.value||"").trim():""};
+const arr=a=>Array.isArray(a)?a:[];
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+
+function showSpinner(){let o=document.getElementById('pdfBusy');if(!o){o=document.createElement('div');o.id='pdfBusy';o.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:99999';o.innerHTML='<div style="width:72px;height:72px;border-radius:50%;border:8px solid #fff;border-top-color:transparent;animation:sp 1s linear infinite"></div><style>@keyframes sp{to{transform:rotate(1turn)}}</style>';document.body.appendChild(o);}else o.style.display='flex';}
+function hideSpinner(){const o=document.getElementById('pdfBusy');if(o)o.style.display='none';}
+
+(async function run(){
+try{
+const ua=gv("ua"),LV=window.LV||[],LH=window.LH||[],vIdx=+gv("v"),hIdx=+gv("h");  
+const verm=LV[vIdx]||{},lieg=LH[hIdx]||"";  
+const header={vermLine:[verm?.n,verm?.adr,verm?.tel,verm?.mail].filter(Boolean).join(" | "),liegenschaft:(typeof lieg==="string")?lieg:(lieg?.adr||""),pos:gv("wp"),ausstatt:gv("wa")};  
+const aus={da:gv("da")?gv("da").split("-").reverse().join("."):"",o1:gv("o1"),o2:gv("o2"),on:gv("on"),oa:gv("oa"),bew:arr(window.BO)};  
+const ein={de:gv("de")?gv("de").split("-").reverse().join("."):"",i1:gv("i1"),i2:gv("i2"),inr:gv("inr"),bew:arr(window.BI)};  
+const RR=arr(window.RR),ZZ=arr(window.ZZ),SS=arr(window.SS),KK=arr(window.KK);  
+const SGcopy=(window.SG||[]).map(s=>({n:s?.n||s?.r||"Unterschrift",img:(s?.data||s?.img||s?.url||"")})).filter(s=>s.img);  
+
+showSpinner(); await sleep(1500);  
+
+const datum=gv("dp")?gv("dp").split("-").reverse().join("."):new Date().toLocaleDateString("de-DE");  
+const zeit=gv("tp")||new Date().toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"});  
+const mnr=[ein.inr,aus.on].filter(Boolean).join(" / ")||"–";  
+const headerHtml=`<header class="doc-header"><h1>Abnahme- / Übergabeprotokoll</h1><div class="vermieter">${esc(header.vermLine||"")}</div><hr></header>`;  
+const kv=rows=>`<table class="pdfkv"><tbody>${rows.map(([k,v])=>`<tr><td class="key">${esc(k)}</td><td class="val">${v}</td></tr>`).join("")}</tbody></table>`;
+
+const auszugRows=[]; if(aus.da)auszugRows.push(["Auszugsdatum",esc(aus.da)]); if(aus.o1)auszugRows.push(["Mieter 1",esc(aus.o1)]); if(aus.o2)auszugRows.push(["Mieter 2",esc(aus.o2)]); if(aus.bew.length)auszugRows.push(["Bewohner",esc(aus.bew.join(", "))]); if(aus.on)auszugRows.push(["Mieternummer",esc(aus.on)]); if(aus.oa)auszugRows.push(["Neue Adresse",esc(aus.oa)]);
+const auszugKV=(ua!=="einzug"&&auszugRows.length)?kv(auszugRows):"";
+const einzugRows=[]; if(ein.de)einzugRows.push(["Einzugsdatum",esc(ein.de)]); if(ein.i1)einzugRows.push(["Mieter 1",esc(ein.i1)]); if(ein.i2)einzugRows.push(["Mieter 2",esc(ein.i2)]); if(ein.bew.length)einzugRows.push(["Bewohner",esc(ein.bew.join(", "))]); if(ein.inr)einzugRows.push(["Mieternummer",esc(ein.inr)]);
+const einzugKV=(ua!=="auszug"&&einzugRows.length)?kv(einzugRows):"";
+const wohnungKV=kv([["Objekt (Liegenschaft)",esc(header.liegenschaft)],["Position",esc(header.pos)],["Ausstattung",esc(header.ausstatt)]]);
+const roomsTable=`<table class="roomstable"><thead><tr><th class="col-room">Raum</th><th class="col-aus">Ausstattung</th><th class="col-io">i.O.</th><th class="col-bem">Bemerkung</th></tr></thead><tbody>${RR.map(r=>`<tr><td>${esc(r?.n||"")}</td><td>${esc(r?.a||"")}</td><td class="center">${r?.ok===true?"✔️":(r?.ok===false?"❌":"X")}</td><td>${esc(r?.rm||"")}</td></tr>`).join("")}</tbody></table>`;
+const meterHasPrev=ZZ.some(z=>z&&String(z?.pv??"").trim()!=="");
+const metersTable=`<table class="metertable"><thead><tr><th class="col-art">Zählerart</th><th class="col-nr">Nr.</th><th class="col-pos">Position</th><th class="col-stand">Stand</th><th class="col-prev">Stand Vorjahr</th><th class="col-bem">Bemerkung</th></tr></thead><tbody>${ZZ.map(z=>`<tr><td>${esc(z?.t||"")}</td><td>${esc(z?.nr||"")}</td><td>${esc(z?.p||"")}</td><td>${esc(z?.st||"")}</td><td class="center">${meterHasPrev?esc(z?.pv||""):"X"}</td><td>${esc(z?.bm||"")}</td></tr>`).join("")}</tbody></table>`;
+const smokeTable=`<table class="smoketable"><thead><tr><th class="col-anz">Anzahl</th><th class="col-st">Status</th><th class="col-bem">Bemerkung</th></tr></thead><tbody>${SS.map(s=>`<tr><td class="center">${esc(s?.n||"")}</td><td>${esc(s?.st||"X")}</td><td>${esc(s?.bm||"")}</td></tr>`).join("")}</tbody></table>`;
+const keysTable=`<table class="keytable"><thead><tr><th class="col-name">Schlüssel</th><th class="col-soll">Übergabe Soll</th><th class="col-ist">Erhalten Ist</th><th class="col-bem">Bemerkung</th></tr></thead><tbody>${KK.map(k=>`<tr><td>${esc(k?.n||"")}</td><td class="center">${esc(k?.u||"")}</td><td class="center">${esc(k?.e||"")}</td><td>${esc(k?.b||"")}</td></tr>`).join("")}</tbody></table>`;
+const sigHtml=SGcopy.length?`<div class="siggrid">${SGcopy.map(s=>`<div class="sigbox"><div class="sigwatermark"></div><div class="sigimg"><img src="${s.img}" alt=""></div><div class="signame">${esc(s.n)}</div></div>`).join("")}</div>`:`<div class="mut">Keine Unterschriften vorhanden.</div>`;
+const remarksHtml=`<div class="note">${esc(gv("np")||"")}</div>`;
+
+/* --- Neue Bilderlogik (2 große Bilder pro Seite, PDF-stabil) --- */
+const allPhotos=[...ZZ.flatMap(z=>(Array.isArray(z.ph)?z.ph.map(p=>({img:p,label:`${esc(z.t)} | ${esc(z.nr)} | Stand: ${esc(z.st)}`})) :[])),...RR.flatMap(r=>(Array.isArray(r.ph)?r.ph.map(p=>({img:p,label:esc(r.n)})) :[])),...SS.flatMap(s=>(Array.isArray(s.ph)?s.ph.map((p,i)=>({img:p,label:`Rauchwarnmelder Bild ${i+1} von ${s.ph.length}`})) :[])),...KK.flatMap(k=>(Array.isArray(k.ph)?k.ph.map(p=>({img:p,label:`Schlüssel | ${esc(k.n||"")}`})) :[]))];
+const chunk=(arr,size)=>arr.reduce((a,c,i)=>{if(i%size===0)a.push([]);a[a.length-1].push(c);return a;},[]);
+const photoPages=chunk(allPhotos,2);
+const photosHtml=photoPages.map(g=>`<div class="page"><div class="imggrid">${g.map(p=>`<div class="imgbox"><div class="imglabel">${p.label}</div><div class="imgwrap"><img src="${p.img}" alt=""></div></div>`).join("")}</div></div>`).join("");
+
+const css=`
+      @page { margin:20mm 15mm 25mm 15mm; @bottom-left{content:"Protokoll | ${datum} | ${zeit} | ${mnr}";font-size:10pt;color:#64748b;} @bottom-right{content:"Seite " counter(page) " / " counter(pages);font-size:10pt;color:#64748b;} }
+      body{font-family:Calibri,Arial,sans-serif;margin:22px;color:#0f172a;font-size:13px;}
+      h1{margin:0 0 6px;font-size:22px;color:#1e3a8a}.vermieter{font-size:12.5px;color:#475569}hr{border:0;border-top:2px solid #dbe1ea;margin:8px 0 14px}
+.section{margin-top:18px;page-break-inside:avoid;}
+.bar{background:#eef3fa;color:#1e3a8a;padding:6px 10px;border-radius:4px;font-size:14px;font-weight:700;margin-bottom:4px;}
+      
+table{width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed;margin-top:4px;background:#fff;border-radius:4px;overflow:hidden;border:1.5px solid #d1d5db;background-clip:padding-box;}table thead tr:first-child th:first-child{border-top-left-radius:4px;}table thead tr:first-child th:last-child{border-top-right-radius:4px;}table tbody tr:last-child td:first-child{border-bottom-left-radius:4px;}table tbody tr:last-child td:last-child{border-bottom-right-radius:4px;}thead th:first-child,tbody td:first-child{background-clip:padding-box;}thead th:last-child,tbody td:last-child{background-clip:padding-box;}
+      
+	  th,td{border:1px solid #d1d5db;padding:5px 8px;font-size:12.5px;vertical-align:top;}
+      thead th{background:#f3f6fb;font-weight:600;text-align:center;}
+.center{text-align:center;vertical-align:middle}
+      table.pdfkv td.key{width:25%;background:#f9fbff;font-weight:600;white-space:nowrap;vertical-align:middle;}
+      table.pdfkv td.val{width:75%;white-space:normal;word-wrap:break-word;}
+.roomstable .col-room{width:15%}.roomstable .col-aus{width:35%}.roomstable .col-io{width:5%}.roomstable .col-bem{width:45%}
+.metertable .col-art{width:15%}.metertable .col-nr{width:20%}.metertable .col-pos{width:20%}.metertable .col-stand{width:15%}.metertable .col-prev{width:15%}.metertable .col-bem{width:15%}
+.smoketable .col-anz{width:10%}.smoketable .col-st{width:40%}.smoketable .col-bem{width:50%}
+.keytable .col-name{width:30%}.keytable .col-soll{width:10%}.keytable .col-ist{width:10%}.keytable .col-bem{width:50%}
+
+	  
+/* === Unterschriftenbereich === */
+.siggrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px;}
+.sigbox{position:relative;overflow:hidden;border:1px solid #4b5563;background:#fff;padding:6px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;}
+.sigimg{width:100%;height:auto;min-height:80px;display:flex;align-items:center;justify-content:center;position:relative;z-index:2;}
+.sigimg img{max-height:100%;max-width:100%;object-fit:contain;}
+.signame{width:100%;text-align:left;font-size:12px;margin-top:4px;padding-left:2px;color:#374151;position:relative;z-index:2;}
+
+/* --- PDF-stabiles Bildlayout --- */
+.imggrid{display:flex;flex-direction:column;gap:20px;margin-top:10px;}
+.imgbox{background:#f1f5f9;border:1px solid #d1d5db;border-radius:4px;padding:6px;page-break-inside:avoid;break-inside:avoid;}
+.imglabel{font-size:12px;text-align:center;color:#334155;margin-bottom:4px;font-weight:600;}
+.imgwrap{background:#e2e8f0;width:100%;height:450px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.imgwrap img{max-width:100%;max-height:100%;object-fit:contain;display:block;}
+.page{page-break-after:always;}
+ `;
+
+      const doc=`<!doctype html><html lang="de"><head><meta charset="utf-8"><title>Übergabeprotokoll</title><style>${css}</style></head><body>
+      ${headerHtml}
+      <div class="section"><div class="bar">Wohnung</div>${wohnungKV}</div>
+      ${auszugKV?`<div class="section"><div class="bar">Ausziehender Mieter</div>${auszugKV}</div>`:""}
+      ${einzugKV?`<div class="section"><div class="bar">Einziehender Mieter</div>${einzugKV}</div>`:""}
+      <div class="section"><div class="bar">Räume</div>${roomsTable}</div>
+      <div class="section"><div class="bar">Zählerstände</div>${metersTable}</div>
+      <div class="section"><div class="bar">Rauchwarnmelder</div>${smokeTable}</div>
+      <div class="section"><div class="bar">Schlüssel</div>${keysTable}</div>
+      <div class="section"><div class="bar">Bemerkungen</div>${remarksHtml}</div>
+      <div class="section"><div class="bar">Unterschriften</div>${sigHtml}</div>
+      <div class="page"></div>
+      ${photosHtml}
+      
+      </body></html>`;
+      showProtocolPreview(doc, { datum, zeit, mnr });
+    }catch(e){alert("Fehler: "+e.message);}finally{hideSpinner();}
+  })();
+}
+</script>
+
+
+
+<!-- === 🧠 Einheitliches Selbstspeicher-System (komplett ohne LocalStorage) === -->
+<script id="savedData" type="application/json">{
+  "meta":{"timestamp":"2025-10-27T09:51:09.752Z"},
+  "formular":{
+    "v":"1","dp":"","h":"1","s":"1","ua":"wechsel","wp":"NEU","wa":"NEU",
+    "da":"2025-10-31","o1":"Mark Hauptmieter Ausziehend 1","o2":"",
+    "on":"001 001 01","oe":"ausziehender@email.de",
+    "oa":"Neue adresse 5 in 600325 Hausenstadtburg","boi":"Linda Bewohner ausziehende 1",
+    "de":"2025-11-01","i1":"Horst Hauptmieter Einziehend 1","i2":"NEU",
+    "inr":"001 001 02","ie":"Einziehender@email.de","bei":"Anna Bewohner Eiziehend 1",
+    "np":"","ni":"","fileUpload":"","fileCamera":""
+  },
+  "arrays":{
+    "LV":[
+      {"n":"NEU","adr":"","mail":"","tel":""},
+      {"n":"Hans Wurst verm.","adr":"Am Wurstkopf 2","mail":"info@info","tel":"069 999999999"}
+    ],
+    "LH":["NEU","Wurststr. 5 in 600000 Wurststadt"],
+    "LS":["NEU","Sachbearbeiter Wurst"],
+    "BI":[],
+    "BO":[],
+    "RR":[
+      {"n":"Wohnzimmer","a":"Laminat / Raufaser","ok":null,"rm":""},
+      {"n":"Diele","a":"Laminat / Raufaser","ok":null,"rm":""},
+      {"n":"Bad","a":"Bodenfliesen grau / Wandfliesen weiß","ok":null,"rm":""}
+    ],
+    "ZZ":[
+      {"t":"Strom","nr":"DZG1 0000 5555 6666","p":"Keller","st":"185","pv":"","bm":""},
+      {"t":"Gas","nr":"888 555","p":"Bad","st":"5532","pv":"","bm":""}
+    ],
+    "SS":[{"n":"5","st":"","bm":""}],
+    "KK":[
+      {"n":"Haustür","u":"3","e":"3","b":""},
+      {"n":"Wohnungstür","u":"2","e":"2","b":""}
+    ],
+    "SG":[{"r":"Einziehender Mieter","n":"NEU","d":""}]
+  }
+}</script>
+
+
+
+<script>
+/* =========================================================
+   🧹 removeAllPhotosBeforeSave()
+   Entfernt alle Foto-Daten aus globalen Arrays, bevor gespeichert wird
+========================================================= */
+function removeAllPhotosBeforeSave() {
+  try {
+    // Alle bekannten Daten-Arrays prüfen
+    const groups = [RR, ZZ, SS, KK, BI, BO];
+    for (const arr of groups) {
+      if (!Array.isArray(arr)) continue;
+      for (const obj of arr) {
+        if (obj && typeof obj === "object" && Array.isArray(obj.ph)) {
+          obj.ph = []; // Bilder löschen
+        }
+      }
+    }
+    console.log("🧹 Alle Foto-Referenzen entfernt (vor Speichern).");
+  } catch (err) {
+    console.error("❌ Fehler in removeAllPhotosBeforeSave:", err);
+  }
+}
+
+/* =========================================================
+   💾 save() Monkey Patch
+   – ruft removeAllPhotosBeforeSave() automatisch auf
+   – bevor gespeicherte Daten erzeugt werden
+========================================================= */
+(function() {
+  const origSave = window.save;
+  window.save = function(...args) {
+    try { removeAllPhotosBeforeSave(); } catch(e) {}
+    if (typeof origSave === "function") return origSave.apply(this, args);
+  };
+  console.log("✅ Foto-Entfernung in save() integriert.");
+})();
+</script>
+
+
+
+<script>
+/* =========================================================
+   🔹 Universeller Speicher (nur eingebettetes JSON)
+========================================================= */
+function save() {
+  try { 
+    updateSavedData(); 
+  } catch (e) { 
+    console.error("❌ save() Fehler:", e); 
+  }
+}
+
+/* =========================================================
+   🔹 updateSavedData() – serialisiert alle Textdaten (ohne Fotos)
+========================================================= */
+function updateSavedData() {
+  try {
+    const data = {
+      meta: { timestamp: new Date().toISOString() },
+      formular: {},
+      arrays: {
+        LV: LV || [],
+        LH: LH || [],
+        LS: LS || [],
+        BI: BI || [],
+        BO: BO || [],
+        RR: Array.isArray(RR) ? RR.map(r => ({
+          n: r.n || "", a: r.a || "", ok: r.ok ?? null, rm: r.rm || ""
+        })) : [],
+        ZZ: Array.isArray(ZZ) ? ZZ.map(m => ({
+          t: m.t || "", nr: m.nr || "", p: m.p || "", st: m.st || "",
+          pv: m.pv || "", bm: m.bm || ""
+        })) : [],
+        SS: Array.isArray(SS) ? SS.map(s => ({
+          n: s.n || "", st: s.st || "", bm: s.bm || ""
+        })) : [],
+        KK: Array.isArray(KK) ? KK.map(k => ({
+          n: k.n || "", u: k.u || "", e: k.e || "", b: k.b || ""
+        })) : [],
+        SG: Array.isArray(SG) ? SG.map(s => ({
+          r: s.r || "", n: s.n || "", d: s.d || ""
+        })) : []
+      }
+    };
+
+    // Formularfelder sichern
+    document.querySelectorAll("input, textarea, select").forEach(el => {
+      if (el.id) data.formular[el.id] = el.type === "checkbox" ? !!el.checked : (el.value ?? "");
+    });
+
+    // E-Mail-Felder explizit ergänzen (falls sie nicht automatisch erfasst werden)
+    if (!data.formular.hasOwnProperty("oe")) data.formular["oe"] = document.getElementById("oe")?.value ?? "";
+    if (!data.formular.hasOwnProperty("ie")) data.formular["ie"] = document.getElementById("ie")?.value ?? "";
+
+    // JSON schreiben
+    const block = document.getElementById("savedData");
+    if (block) block.textContent = JSON.stringify(data, null, 2);
+  } catch (e) {
+    console.error("⚠️ Fehler in updateSavedData():", e);
+  }
+}
+
+/* =========================================================
+   🔹 restoreSavedData() – stellt Formular & Arrays wieder her
+========================================================= */
+window.addEventListener("DOMContentLoaded", () => {
+  const block = document.getElementById("savedData");
+  if (!block || !block.textContent.trim()) return;
+
+  try {
+    const data = JSON.parse(block.textContent);
+
+    // Hilfsfunktion für Dropdown-Wiederherstellung
+    function safeSetSelect(id, value) {
+      const sel = document.getElementById(id);
+      if (!sel) return;
+      if (sel.querySelector(`option[value="${value}"]`)) sel.value = value;
+      else if (!isNaN(value) && sel.options[Number(value)]) sel.selectedIndex = Number(value);
+    }
+
+    // Formularfelder sicher wiederherstellen
+    try {
+      Object.entries(data.formular || {}).forEach(([id, val]) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (el.tagName === "INPUT" && el.type === "file") return;
+        if (el.type === "checkbox") { el.checked = !!val; return; }
+        if (Object.prototype.hasOwnProperty.call(el, "value") || "value" in el) {
+          try { el.value = val ?? ""; }
+          catch (err) { console.warn(`⚠️ Feld '${id}' konnte nicht gesetzt werden:`, err); }
+        }
+      });
+
+      // E-Mail-Felder sicherstellen (falls noch nicht gesetzt)
+      const oe = document.getElementById("oe");
+      if (oe && data.formular?.oe) oe.value = data.formular.oe;
+      const ie = document.getElementById("ie");
+      if (ie && data.formular?.ie) ie.value = data.formular.ie;
+
+      // ✅ Jetzt Pflichtfelder sofort prüfen & markieren
+      if (typeof autoValidateMainForm === "function") autoValidateMainForm();
+
+    } catch (err) {
+      console.error("❌ Fehler beim Wiederherstellen der Formularfelder:", err);
+    }
+
+    // Arrays wiederherstellen …
+    LV = data.arrays?.LV || [];
+    LH = data.arrays?.LH || [];
+    LS = data.arrays?.LS || [];
+    BI = data.arrays?.BI || [];
+    BO = data.arrays?.BO || [];
+    RR = (data.arrays?.RR || []).map(r => ({ ...r, ph: [] }));
+    ZZ = (data.arrays?.ZZ || []).map(m => ({ ...m, ph: [] }));
+    SS = (data.arrays?.SS || []).map(s => ({ ...s, ph: [] }));
+    KK = (data.arrays?.KK || []).map(k => ({ ...k, ph: [] }));
+    SG = (data.arrays?.SG || []).map(s => ({ ...s, img: "" }));
+    if(!Array.isArray(SG)||!SG.some(s=>s.img)){SG=[];var sig=document.getElementById('sig');if(sig)sig.innerHTML='<div class="mut">Noch keine Unterschriften.</div>';if(typeof renderSigBars==='function')renderSigBars();}
+
+    // UI rendern
+    setTimeout(() => {
+      renderRooms?.();
+      renderMeters?.();
+      renderSmokes?.();
+      renderKeys?.();
+      renderBew?.();
+      renderSigns?.();
+      qOpt?.($('#v'), LV, x => x.n);
+      qOpt?.($('#h'), LH);
+      qOpt?.($('#s'), LS);
+      safeSetSelect('v', data.formular?.v);
+      safeSetSelect('h', data.formular?.h);
+      safeSetSelect('s', data.formular?.s);
+
+      // ✅ Sicherheitshalber auch nach UI-Rebuild prüfen
+      if (typeof autoValidateMainForm === "function") autoValidateMainForm();
+
+      console.log("✅ Wiederherstellung abgeschlossen (Dropdowns inklusive & Validierung aktiv).");
+    }, 100);
+
+  } catch (e) {
+    console.error("❌ Fehler beim Wiederherstellen:", e);
+  }
+
+  // Autosave aktivieren
+  document.addEventListener("input", updateSavedData);
+  document.addEventListener("change", updateSavedData);
+  setInterval(updateSavedData, 3000);
+});
+
+
+/* =========================================================
+   🔹 Download als eigenständige HTML-Datei (ohne Bilder)
+========================================================= */
+document.getElementById("saveFileBtn")?.addEventListener("click", () => {
+  // Unterschriften vollständig entfernen, bevor Datei gespeichert wird
+  if (typeof SG !== "undefined") {
+    SG = [];
+    if (typeof renderSigns === "function") renderSigns();
+    if (typeof renderSigBars === "function") renderSigBars();
+  }
+  updateSavedData();
+  const html = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+  const blob = new Blob([html], { type: "text/html" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = (document.title.replace(/\s+/g, "_") || "Uebergabeprotokoll") + ".html";
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 800);
+  alert("💾 Datei gespeichert");
+});
+
+
+</script>
+
+
+
+
+
+
+
+
+
+</body></html>
